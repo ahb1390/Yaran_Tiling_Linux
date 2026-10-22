@@ -36,10 +36,9 @@ workflowهای موجود در مسیر `.github/workflows/` در وضعیت ک�
 1. **`validate`** — تست‌های واحد، اجرای `--validate` روی هر manifest، و
    اجرای `bash -n` روی هر اسکریپت shell. اگر این مرحله شکست بخورد، هیچ
    تصویری ساخته نمی‌شود.
-2. **بیلدهای نسخه‌ها (Editions)** — نسخه‌های Minimal و Extended (هر دو روی
-   `ubuntu-latest`)، ARM64 (روی runner بومی `ubuntu-24.04-arm`)، و Server؛
-   هر کدام در یک container ممتاز (privileged) از جنس `debian:trixie` که
-   اسکریپت `scripts/ci-build.sh` را اجرا می‌کند.
+2. **بیلدهای نسخه‌ها (Editions)** — نسخه‌های Minimal و Extended، هر دو روی
+   `ubuntu-latest` و در یک container ممتاز (privileged) از جنس `debian:trixie`
+   که اسکریپت `scripts/ci-build.sh` را اجرا می‌کند.
 
 هر job مربوط به هر نسخه، این موارد را بارگذاری (upload) می‌کند:
 
@@ -49,14 +48,13 @@ workflowهای موجود در مسیر `.github/workflows/` در وضعیت ک�
   (`compression-level: 0`، بنابراین ISO بدون فشرده‌سازی مجدد ذخیره می‌شود).
 
 نام مصنوع‌ها: `yaran-amd64-minimal`، `yaran-amd64-extended`،
-`yaran-arm64`، `yaran-server-amd64` (هر کدام با یک مصنوعِ هم‌نام با پسوند
-`-log`).
+(هر کدام با یک مصنوعِ هم‌نام با پسوند `-log`).
 
 ## نحوهٔ کار انتشارها (ریلیزها)
 
 [workflow ساخت انتشار (Release Build)](https://github.com/ahb1390/Yaran_linux/actions/workflows/release.yml)
 وقتی یک GitHub release **منتشر (publish) می‌شود** فعال می‌شود. این workflow
-همهٔ چهار نسخه را با همان job مربوط به `image.yml` می‌سازد و از آنجا که
+هر دو نسخهٔ دسکتاپ را با همان job مربوط به `image.yml` می‌سازد و از آنجا که
 `release: true` است، هر job فایل‌های `output/*.iso` و `output/*.sha256` خود
 را از طریق `softprops/action-gh-release` با `fail_on_unmatched_files: true`
 به release پیوست می‌کند — اگر بیلدی ISO تولید نکند، job مربوط به release
@@ -68,14 +66,14 @@ workflow انتشار از روی commitی که tag مربوط به release به
 ## انتشار یک نسخه (برای نگه‌دارندگان)
 
 1. مطمئن شوید شاخهٔ `rebrand/yaran-linux` (یا شاخهٔ هدف) سبز است: آخرین اجرای
-   workflow ساخت باید برای هر چهار نسخه با موفقیت تمام شده باشد.
+   workflow ساخت باید برای هر دو نسخهٔ دسکتاپ با موفقیت تمام شده باشد.
 2. رشتهٔ نسخه (version) را تعیین کنید. نسخهٔ درج‌شده در manifestها
    (`version`، `iso_filename`، `os_release`) باید با tag مورد نظر
    مطابقت داشته باشد — اگر متفاوت است، ابتدا در یک pull request آن‌ها را
    به‌روزرسانی کنید.
 3. یک GitHub release با tag‌ای مانند `v2.0.1` بسازید و آن را **منتشر
    (publish) کنید**. releaseهای پیش‌نویس (Draft) workflow را فعال نمی‌کنند.
-4. صبر کنید اجرای Release Build تمام شود، سپس راستی‌آزمایی کنید که هر چهار
+4. صبر کنید اجرای Release Build تمام شود، سپس راستی‌آزمایی کنید که هر دو
    جفت ISO/checksum به release پیوست شده‌اند.
 5. یک checksum را گزینشی راستی‌آزمایی کنید (در ادامه) و در صورت امکان، پیش
    از اعلام release، یک ISO را در یک ماشین مجازی بوت کنید.
@@ -102,6 +100,6 @@ workflow (که در بالای صفحهٔ اجرا نمایش داده می‌ش
 
 ## وضعیت
 
-در حال حاضر هر چهار نسخه با موفقیت در CI ساخته می‌شوند. هنوز هیچ GitHub
-release منتشر نشده است؛ تا زمانی که این اتفاق بیفتد، مصنوع‌های CI را
-به‌عنوان بیلدهای موجودِ پیش از انتشار در نظر بگیرید.
+گردش‌کار CI برای ساخت دو نسخهٔ دسکتاپ AMD64 یعنی Minimal و Extended تنظیم شده
+است. هنوز هیچ GitHub release منتشر نشده است؛ تا زمانی که این اتفاق بیفتد،
+مصنوع‌های CI را به‌عنوان بیلدهای موجودِ پیش از انتشار در نظر بگیرید.
