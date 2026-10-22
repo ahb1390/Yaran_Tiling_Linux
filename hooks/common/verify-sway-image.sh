@@ -60,13 +60,20 @@ grep -qx 'Theme=yaran' /etc/plymouth/plymouthd.conf 2>/dev/null || problem 'Plym
 [ -d /etc/skel/Projects ] || problem '/etc/skel/Projects is missing'
 [ -f /etc/environment.d/90-yaran-sway.conf ] || problem 'Sway XDG environment is missing'
 
-# Validate the complete effective config without needing a running Wayland session.
+# Validate the complete effective config without a running Wayland session.
+# Sway still expects XDG_RUNTIME_DIR even in config-check mode, and a build
+# chroot has no logged-in user's runtime directory. Create a private temporary
+# runtime directory so the check validates the config rather than failing on
+# missing session environment.
 if command -v sway >/dev/null 2>&1; then
-    if validation_output=$(sway -C -c /etc/sway/config 2>&1); then
+    runtime_dir=$(mktemp -d /tmp/yaran-sway-config-check.XXXXXX)
+    chmod 0700 "$runtime_dir"
+    if validation_output=$(XDG_RUNTIME_DIR="$runtime_dir" sway -C -c /etc/sway/config 2>&1); then
         ok 'Sway configuration parses successfully'
     else
         problem "Sway configuration validation failed: $validation_output"
     fi
+    rm -rf -- "$runtime_dir"
 fi
 
 for pkg in kde-plasma-desktop plasma-workspace powerdevil plasma-pa plasma-nm bluedevil xdg-desktop-portal-kde; do
