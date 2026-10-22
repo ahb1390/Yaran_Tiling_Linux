@@ -11,24 +11,21 @@ set -euo pipefail
 
 : "${ROOTFS:?ROOTFS must point at the bootstrap rootfs}"
 
-# Pinned upstream release. Update procedure: pick the newest v26.x listed in
-# https://nodejs.org/dist/index.json, copy the linux-x64 and linux-arm64
-# tarball hashes from that release's SHASUMS256.txt into the pins below, and
-# keep the major-version check in hooks/common/verify-image.sh in sync.
+# Pinned upstream release for Yaran's supported AMD64 desktop images.
+# Update procedure: pick the newest v26.x listed in
+# https://nodejs.org/dist/index.json, copy the linux-x64 tarball hash from
+# that release's SHASUMS256.txt into the pin below, and keep the major-version
+# check in hooks/common/verify-image.sh in sync.
 NODE_VERSION="v26.12.0"
 NODE_SHA256_x64="fd47865ecd6391ebb431fc815e01b9135bf83ded5cf373247e9331e196b7aded"
-NODE_SHA256_arm64="fd6cc729fa4448c2ac27c3fca5606019ced63c65a15c152c8df03e0cbce7f4c5"
 
 arch=$(dpkg --print-architecture)
-case "$arch" in
-    amd64) node_arch=x64; pinned=$NODE_SHA256_x64 ;;
-    arm64) node_arch=arm64; pinned=$NODE_SHA256_arm64 ;;
-    *)
-        echo "nodejs: no official Node.js build for architecture '$arch'" >&2
-        echo 'nodejs: remove install-nodejs26.sh from this manifest or add a pinned release for it' >&2
-        exit 1
-        ;;
-esac
+if [ "$arch" != "amd64" ]; then
+    echo "nodejs: the Yaran Node.js hook supports AMD64 images only (detected '$arch')" >&2
+    exit 1
+fi
+node_arch=x64
+pinned=$NODE_SHA256_x64
 
 tarball="node-$NODE_VERSION-linux-$node_arch.tar.xz"
 base_url="https://nodejs.org/dist/$NODE_VERSION"
