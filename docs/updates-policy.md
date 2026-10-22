@@ -59,10 +59,3 @@ EOF
 
 `unattended-upgrades` remains installed in the image precisely so this stays a
 configuration change, not a package install.
-
-## Server images
-
-Server images keep automatic unattended **security** upgrades enabled
-(`trixie-security` only) — that is the conventional expectation for an
-unattended server, and the server has no desktop session competing for the
-locks. See `hooks/server/automatic-updates.sh`.
