@@ -64,19 +64,18 @@ dpkg -l debootstrap squashfs-tools xorriso mtools dosfstools grub2-common
 [builder guide](builder.md#host-requirements), and export
 `PATH=$PATH:/usr/sbin` for root if `chroot` is not found.
 
-## Wrong architecture host
+## Target architecture mismatch
 
 **Symptom:** `Use a native <arch> host/container; detected <arch>`
 
 **Log:** stderr, before the first step banner.
 
-**Causes:** building the ARM64 manifest on an AMD64 machine (or vice
-versa). The builder refuses cross-architecture builds; this is by design —
+**Causes:** a custom manifest requests a target architecture different from
+the build host. The builder intentionally refuses cross-architecture builds;
 cross-architecture bootstrap is not implemented.
 
-**Fix:** use a native host or container of the target architecture. CI uses
-a native `ubuntu-24.04-arm` runner for the ARM64 image; locally, an ARM64
-machine or a properly configured ARM64 container with emulation can be used.
+**Fix:** use a native host or container matching the manifest. The published
+Yaran desktop presets target AMD64 only.
 
 ## Work directory problems
 
@@ -267,30 +266,7 @@ present in the image.
 
 **Fix:** use the debug entry to identify the failing component. Desktop
 autologin is configured by `hooks/desktop/live-autologin.sh`; the server
-image deliberately boots to a text console with the installer service.
 
-## Installation problems (server CLI installer)
-
-**Symptom:** the `install-yaran` installer does not start on the live
-console, or installation fails partway.
-
-**Log:** the installer writes a log to `/tmp/yaran-installer.*` inside the
-live session.
-
-**Causes:** the installer service is enabled by
-`hooks/server/install-cli-installer.sh`; an image built without that hook
-has no installer. The installer only offers unused disks and requires
-explicit confirmation before erasing one.
-
-**Diagnosis:** run it manually from a local console:
-
-```sh
-sudo install-yaran
-```
-
-**Fix:** ensure the manifest includes the server hooks, and re-run the
-installer. SSH is intentionally disabled on live media; enable it only
-after changing the live password.
 
 ## Getting help
 
