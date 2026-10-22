@@ -5,7 +5,10 @@ set -euo pipefail
 fail=0
 problem() { echo "verify-sway-image: FAIL: $*" >&2; fail=1; }
 has_package() {
-    dpkg-query -W -f='${db:Status-Status}' "$1" 2>/dev/null | grep -qx installed
+    # Avoid a dpkg-query | grep -q pipeline: under pipefail the consumer can
+    # exit early and turn a successful query into a SIGPIPE failure.
+    status=$(dpkg-query -W -f='${db:Status-Status}' "$1" 2>/dev/null || true)
+    [ "$status" = installed ]
 }
 
 for pkg in sway swaybg swayidle swaylock swayosd waybar foot wofi mako-notifier \
