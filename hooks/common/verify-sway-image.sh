@@ -60,6 +60,15 @@ grep -qx 'Theme=yaran' /etc/plymouth/plymouthd.conf 2>/dev/null || problem 'Plym
 [ -d /etc/skel/Projects ] || problem '/etc/skel/Projects is missing'
 [ -f /etc/environment.d/90-yaran-sway.conf ] || problem 'Sway XDG environment is missing'
 
+# Validate the complete effective config without needing a running Wayland session.
+if command -v sway >/dev/null 2>&1; then
+    if validation_output=$(sway -C -c /etc/sway/config 2>&1); then
+        ok 'Sway configuration parses successfully'
+    else
+        problem "Sway configuration validation failed: $validation_output"
+    fi
+fi
+
 for pkg in kde-plasma-desktop plasma-workspace powerdevil plasma-pa plasma-nm bluedevil xdg-desktop-portal-kde; do
     if has_package "$pkg"; then
         problem "KDE/Plasma package must not ship in Sway Minimal: $pkg"
