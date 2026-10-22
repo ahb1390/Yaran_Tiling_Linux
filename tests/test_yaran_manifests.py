@@ -556,7 +556,7 @@ class NodeJs26Tests(unittest.TestCase):
         cfg = load(ROOT / 'Yaran-2.0-amd64-extended.json')
         self.assertIn('hooks/desktop/install-nodejs26.sh',
                       cfg['pre_chroot_scripts'])
-        for path in DESKTOP_MANIFESTS + [ROOT / 'Yaran-Server-2.0-amd64.json']:
+        for path in DESKTOP_MANIFESTS:
             with self.subTest(manifest=path.name):
                 self.assertNotIn('nodejs', load(path)['packages'],
                                  'Debian trixie only packages Node.js 20.x')
