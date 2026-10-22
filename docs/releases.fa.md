@@ -47,8 +47,8 @@ workflowهای موجود در مسیر `.github/workflows/` در وضعیت ک�
 - `<artifact>` — در صورت موفقیت، فایل‌های `output/*.iso` و `output/*.sha256`
   (`compression-level: 0`، بنابراین ISO بدون فشرده‌سازی مجدد ذخیره می‌شود).
 
-نام مصنوع‌ها: `yaran-amd64-minimal`، `yaran-amd64-extended`،
-(هر کدام با یک مصنوعِ هم‌نام با پسوند `-log`).
+نام مصنوع‌ها `yaran-amd64-minimal` و `yaran-amd64-extended` هستند. هر کدام
+یک مصنوع گزارشِ متناظر با پسوند `-log` نیز دارند.
 
 ## نحوهٔ کار انتشارها (ریلیزها)
 
