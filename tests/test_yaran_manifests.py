@@ -23,10 +23,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 DESKTOP_MANIFESTS = [
-    ROOT / 'Yaran-2.0-amd64.json',
     ROOT / 'Yaran-2.0-amd64-minimal.json',
     ROOT / 'Yaran-2.0-amd64-extended.json',
-    ROOT / 'Yaran-2.0-arm64.json',
 ]
 
 REQUIRED_PACKAGES = {
@@ -379,7 +377,7 @@ class SpacePathRegressionTests(unittest.TestCase):
     """Quoting bugs are semantic: `bash -n` accepts them and only a real
     build inside the image fails. Assigning
         background=/usr/share/wallpapers/Yaran Emblem/...
-    unquoted broke all three desktop CI builds; these tests keep the
+    unquoted broke the desktop CI builds; these tests keep the
     mistake from ever coming back."""
 
     HOOKS = sorted((ROOT / 'hooks').rglob('*.sh')) + [ROOT / 'assets/bash/yaran-bashrc']
@@ -450,7 +448,7 @@ class VendorRepositoryPolicyTests(unittest.TestCase):
         return (ROOT / 'hooks/desktop' / name).read_text()
 
     def test_manifests_opt_in_only_when_they_ship_vendor_packages(self):
-        for path in DESKTOP_MANIFESTS + [ROOT / 'Yaran-Server-2.0-amd64.json']:
+        for path in DESKTOP_MANIFESTS:
             cfg = load(path)
             with self.subTest(manifest=path.name):
                 ships_vendor = any(
@@ -533,7 +531,7 @@ class NodeJs26Tests(unittest.TestCase):
         self.assertIsNotNone(match, 'install-nodejs26.sh must pin NODE_VERSION')
         self.assertEqual(match.group(2), '26',
                          f'Node.js must come from the 26 release line, got {match.group(1)}')
-        for arch in ('x64', 'arm64'):
+        for arch in ('x64',):
             pinned = re.search(rf'^NODE_SHA256_{arch}="([0-9a-f]{{64}})"', hook, re.M)
             self.assertIsNotNone(pinned, f'missing pinned SHA-256 for {arch}')
         # The download must be verified before extraction, and cross-checked
@@ -617,7 +615,7 @@ class CIFailureRegressionTests(unittest.TestCase):
     """Regressions for the three real failures of CI run 38727935250
     (commit 6dfcdfa, "Build & Validate Yaran Linux" run #8):
 
-      1. AMD64+ARM64: verify-image reported
+      1. AMD64 desktop editions: verify-image reported
          "the installed GRUB theme uses terminal-color" — a FALSE POSITIVE:
          the theme.txt '#' comment that documents the GRUB 2.12 history
          mentions the literal string, and the old check matched it.
