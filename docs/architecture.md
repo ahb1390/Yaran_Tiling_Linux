@@ -23,13 +23,11 @@ branding. All branding, packages, and configuration live in the manifests,
 | Path | Role |
 |---|---|
 | `build.py` | The builder: configuration loading and validation, bootstrap, package installation, hook execution, SquashFS and ISO assembly |
-| `Yaran-2.0-*.json`, `Yaran-Server-2.0-amd64.json` | Image manifests: one JSON file per published edition |
-| `Yaran-2.0-amd64.json` | Legacy single desktop manifest, kept for compatibility, not built by CI |
-| `hooks/common/` | Hooks shared by desktop and server images (Calamares, Fastfetch, CA certificates, asset cleanup) |
+| `Yaran-2.0-amd64-minimal.json`, `Yaran-2.0-amd64-extended.json` | The two supported AMD64 desktop manifests |
+| `hooks/common/` | Common utilities used by desktop images (Calamares, Fastfetch, CA certificates, asset cleanup) |
 | `hooks/desktop/` | Desktop-only hooks (Plasma assets, SDDM autologin, firewall, sysctl, vendor repositories, external apps) |
-| `hooks/server/` | Server-only hooks (CLI installer, journald, password policy, firewall, sysctl) |
 | `scripts/ci-build.sh` | The single Debian build script CI runs inside a privileged container; installs dependencies, tests, validates, builds |
-| `assets/` | Branding files copied into images by hooks: Plasma/SDDM theme, wallpapers, Calamares config, Fastfetch config, server installer files |
+| `assets/` | Branding files copied into desktop images by hooks: Plasma/SDDM theme, wallpapers, Calamares config, and Fastfetch config |
 | `examples/` | Starting-point manifests for other Debian-family distributions |
 | `tests/` | Unit tests for configuration and assembly, plus the optional QEMU boot smoke test |
 | `.github/workflows/` | CI: `build.yml` (validation + edition builds), `image.yml` (reusable build job), `release.yml` (release builds) |
@@ -66,7 +64,7 @@ banner with its name, so build logs show exactly where a failure happened.
    `os_release` overrides, and the `services` enable/disable/mask lists.
 9. **Post-install hooks** (`post_install_scripts`) — your hooks run
    **inside the chroot** as `bash -eu` scripts. Yaran Linux applies the
-   desktop/server configuration here.
+   desktop configuration here.
 10. **Apply services** — run `systemctl` for each nonempty
     `services.enable` / `disable` / `mask` list.
 11. **Regenerate initramfs** — `update-initramfs -u -k all` so hook-installed
@@ -121,9 +119,6 @@ are copied into temporary files and removed even on failure.
   helper).
 - `assets/fastfetch/` — the Fastfetch configuration and logo shown in
   interactive Bash sessions.
-- `assets/server/` — the server CLI installer: `/usr/local/bin/install-yaran`,
-  its sudoers rule, and the `yaran-installer.service` unit that starts it on
-  the live console.
 
 Desktop images stage assets into `/.temp_assets/` inside the chroot
 (`stage-assets.sh`), consume them in later hooks, and remove the staging
@@ -157,8 +152,7 @@ it retains a work directory.
 
 `build.yml` runs a `validate` job (unit tests, all manifests `--validate`,
 `bash -n` over every shell script) and then fans out to the reusable
-`image.yml` workflow for each edition: Minimal and Extended on `ubuntu-latest`,
-ARM64 on a native `ubuntu-24.04-arm` runner, and Server on `ubuntu-latest`.
+`image.yml` workflow for the two desktop editions (Minimal and Extended), both on `ubuntu-latest`.
 Each `image.yml` job runs `docker run --privileged debian:trixie
 bash scripts/ci-build.sh <manifest>` and uploads the log (always) and the
 ISO + checksum (on success). `release.yml` does the same for every edition
