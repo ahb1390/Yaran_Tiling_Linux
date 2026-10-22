@@ -32,7 +32,7 @@
     "xdg-desktop-portal-gtk", "pipewire", "pipewire-pulse", "pipewire-alsa",
     "pipewire-audio", "wireplumber", "gstreamer1.0-pipewire",
     "libspa-0.2-bluetooth", "rtkit", "alsa-ucm-conf", "alsa-utils", "pavucontrol",
-    "upower", "power-profiles-daemon", "thermald", "polkitd", "lxqt-policykit",
+    "upower", "power-profiles-daemon", "thermald", "polkitd", "mate-polkit",
     "ca-certificates", "bash-completion", "systemd-timesyncd", "fonts-vazirmatn",
     "fonts-vazirmatn-variable", "fonts-noto-core", "fonts-noto-cjk",
     "fonts-noto-mono", "fonts-noto-ui-core", "fonts-hosny-amiri",
@@ -54,7 +54,8 @@
     "powerdevil", "plasma-pa", "plasma-nm", "bluedevil",
     "xdg-desktop-portal-kde", "dolphin", "kate", "konsole", "nautilus",
     "gnome-shell", "gnome-terminal", "file-roller", "evince", "totem",
-    "rhythmbox", "tlp", "tlp-rdw", "zenity"
+    "rhythmbox", "tlp", "tlp-rdw", "zenity",
+    "lxqt-session", "lxqt-policykit", "lxqt"
   ],
   "pre_chroot_scripts": ["hooks/desktop/stage-sway-assets.sh"],
   "post_install_scripts": [

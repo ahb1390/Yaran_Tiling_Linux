@@ -8,11 +8,11 @@ that every laptop has already been validated.
 
 - Sway/Wayland with a modular system configuration under /etc/sway.
 - Waybar, foot, wofi, mako, SwayOSD, NetworkManager, PipeWire/WirePlumber,
-  a PolicyKit agent, common firmware, and Persian-capable fonts.
+  the MATE PolicyKit authentication agent (without the LXQt session dependency), common firmware, and Persian-capable fonts.
 - Calamares graphical installation and the existing GRUB/Plymouth branding.
 - Explicit key bindings for Super+Enter, Super+KP_Enter, volume/mute, and
   brightness.
-- No KDE Plasma desktop packages in this profile.
+- No KDE Plasma or LXQt desktop/session packages in this profile.
 
 The existing 2.0 manifests and their tests are retained during the transition
 as a comparison/fallback. The new profile is named

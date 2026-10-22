@@ -24,7 +24,7 @@ class SwayManifestTests(unittest.TestCase):
             "network-manager", "network-manager-gnome",
             "pipewire", "pipewire-pulse", "pipewire-audio", "wireplumber",
             "xdg-desktop-portal", "xdg-desktop-portal-wlr", "xdg-desktop-portal-gtk",
-            "sddm", "calamares", "polkitd", "lxqt-policykit",
+            "sddm", "calamares", "polkitd", "mate-polkit",
             "fonts-vazirmatn", "fonts-noto-core", "fonts-noto-cjk",
             "fonts-noto-color-emoji", "firmware-misc-nonfree", "bluez-firmware",
         }
@@ -40,6 +40,16 @@ class SwayManifestTests(unittest.TestCase):
         }
         self.assertFalse(packages & forbidden, f"unexpected KDE packages: {sorted(packages & forbidden)}")
         self.assertTrue(forbidden <= set(self.cfg["exclude_packages"]))
+
+    def test_sway_profile_does_not_pull_lxqt(self):
+        packages = set(self.cfg["packages"])
+        forbidden = {"lxqt", "lxqt-session", "lxqt-policykit"}
+        self.assertFalse(packages & forbidden,
+                         f"unexpected LXQt packages: {sorted(packages & forbidden)}")
+        self.assertTrue(forbidden <= set(self.cfg["exclude_packages"]))
+        autostart = (ROOT / "assets/yaran-sway/etc/sway/config.d/20-yaran-autostart.conf").read_text()
+        self.assertIn("exec /usr/libexec/polkit-mate-authentication-agent-1", autostart)
+        self.assertNotIn("lxqt-policykit-agent", autostart)
 
     def test_package_manifest_is_deduplicated_and_uses_debian_sources(self):
         packages = self.cfg["packages"]
@@ -87,7 +97,9 @@ class SwayManifestTests(unittest.TestCase):
         self.assertIn("calamares", self.cfg["packages"])
         self.assertIn("sddm", self.cfg["packages"])
         login = (ROOT / "hooks/desktop/sway-live-autologin.sh").read_text()
-        self.assertIn("Session=sway", login)
+        self.assertIn("Session=$session_name", login)
+        self.assertIn("session_file=/usr/share/wayland-sessions/sway.desktop", login)
+        self.assertIn("Session=sway.desktop", (ROOT / "hooks/common/verify-sway-image.sh").read_text())
         calamares = (ROOT / "assets/calamares/settings.conf").read_text()
         self.assertIn("partition", calamares)
         self.assertIn("finished", calamares)
