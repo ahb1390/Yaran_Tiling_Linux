@@ -8,9 +8,8 @@
 
 | تصویر | مخازن |
 |---|---|
-| دسکتاپ استاندارد / ARM64 | `trixie` ، `trixie-updates` ، `trixie-security` |
-| دسکتاپ مینیمال / Extended | سه مورد بالا **به‌علاوه** `trixie-backports` |
-| سرور | `trixie` ، `trixie-updates` ، `trixie-security` |
+| دسکتاپ Minimal (AMD64) | `trixie` ، `trixie-updates` ، `trixie-security` ، `trixie-backports` |
+| دسکتاپ Extended (AMD64) | `trixie` ، `trixie-updates` ، `trixie-security` ، `trixie-backports` |
 
 قواعدی که `hooks/common/verify-image.sh` در زمان ساخت بررسی می‌کند (هر نقضی ساخت را متوقف می‌کند):
 
