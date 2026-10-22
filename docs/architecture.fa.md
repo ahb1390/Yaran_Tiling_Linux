@@ -15,13 +15,11 @@
 | مسیر | نقش |
 |---|---|
 | `build.py` | بیلدکننده: بارگذاری و اعتبارسنجی پیکربندی، بوت‌استرپ، نصب بسته‌ها، اجرای هوک‌ها، مونتاژ SquashFS و ISO |
-| `Yaran-2.0-*.json`، `Yaran-Server-2.0-amd64.json` | مانیفست‌های ایمیج: یک فایل JSON برای هر نسخه (edition) منتشرشده |
-| `Yaran-2.0-amd64.json` | مانیفست قدیمی تک‌دسکتاپ، که برای سازگاری نگه داشته شده و توسط CI ساخته نمی‌شود |
-| `hooks/common/` | هوک‌های مشترک ایمیج‌های دسکتاپ و سرور (Calamares، Fastfetch، گواهی‌های CA، پاک‌سازی دارایی‌ها) |
+| `Yaran-2.0-amd64-minimal.json`، `Yaran-2.0-amd64-extended.json` | دو مانیفست پشتیبانی‌شدهٔ دسکتاپ AMD64 |
+| `hooks/common/` | ابزارهای مشترک برای ایمیج‌های دسکتاپ (Calamares، Fastfetch، گواهی‌های CA، پاک‌سازی دارایی‌ها) |
 | `hooks/desktop/` | هوک‌های اختصاصی دسکتاپ (دارایی‌های Plasma، ورود خودکار SDDM، فایروال، sysctl، مخازن فروشنده، برنامه‌های خارجی) |
-| `hooks/server/` | هوک‌های اختصاصی سرور (نصب‌کننده CLI، journald، سیاست رمز عبور، فایروال، sysctl) |
 | `scripts/ci-build.sh` | اسکریپت ساخت واحد دبیان که CI داخل یک کانتینر privileged اجرا می‌کند؛ نصب وابستگی‌ها، آزمون، اعتبارسنجی و ساخت |
-| `assets/` | فایل‌های برندینگ که توسط هوک‌ها داخل ایمیج‌ها کپی می‌شوند: تم Plasma/SDDM، کاغذدیواره‌ها، پیکربندی Calamares، پیکربندی Fastfetch، فایل‌های نصب‌کننده سرور |
+| `assets/` | فایل‌های برندینگ ایمیج‌های دسکتاپ: تم Plasma/SDDM، کاغذدیواره‌ها، پیکربندی Calamares و پیکربندی Fastfetch |
 | `examples/` | مانیفست‌های نقطه شروع برای دیگر توزیع‌های خانواده دبیان |
 | `tests/` | آزمون‌های واحد برای پیکربندی و مونتاژ، به‌همراه آزمون دود (smoke test) اختیاری بوت QEMU |
 | `.github/workflows/` | CI: `build.yml` (اعتبارسنجی + ساخت نسخه‌ها)، `image.yml` (job ساخت قابل استفاده مجدد)، `release.yml` (ساخت‌های release) |
@@ -38,7 +36,7 @@
 6. **نصب بسته‌ها** (`install_packages`) — اعمال `exclude_packages` به‌صورت pinهای منفی APT، اجرای شبیه‌سازی وابستگی‌های APT، و سپس نصب `live_packages` + `kernel_package` + `packages` با غیرفعال‌بودن recommendها، مگر اینکه `install_recommends` برابر true باشد.
 7. **پیکربندی کاربران** (`configure_users`) — ایجاد کاربر live و گروه‌ها، تنظیم یا قفل کردن رمزهای عبور بر اساس مانیفست، و قفل کردن root مگر اینکه رمز عبور root داده شده باشد.
 8. **پیکربندی سیستم** (`configure_system`) — نام میزبان، locale، منطقه زمانی، بازنویسی‌های `os_release` و فهرست‌های فعال/غیرفعال/ماسک کردن `services`.
-9. **هوک‌های پس از نصب** (`post_install_scripts`) — هوک‌های شما **درون chroot** به‌صورت اسکریپت‌های `bash -eu` اجرا می‌شوند. Yaran Linux پیکربندی دسکتاپ/سرور را در همینجا اعمال می‌کند.
+9. **هوک‌های پس از نصب** (`post_install_scripts`) — هوک‌های شما **درون chroot** به‌صورت اسکریپت‌های `bash -eu` اجرا می‌شوند. Yaran Linux پیکربندی دسکتاپ را در همینجا اعمال می‌کند.
 10. **اعمال سرویس‌ها** — اجرای `systemctl` برای هر فهرست غیرخالی از `services.enable` / `disable` / `mask`.
 11. **بازتولید initramfs** — اجرای `update-initramfs -u -k all` تا پیکربندی‌های نصب‌شده توسط هوک‌ها در تصویر بوت گنجانده شوند.
 12. **پاک‌سازی chroot** — حذف کش‌ها و فایل‌های موقت هوک‌ها، پاک کردن لاگ‌ها و وضعیت machine-id، تا سیستم زنده تمیز بالا بیاید.
@@ -68,7 +66,6 @@
 - `assets/wallpapers/` — بسته‌های کاغذدیواری، که به‌عنوان پس‌زمینه GRUB نیز از طریق `grub_menu.background` استفاده می‌شوند.
 - `assets/calamares/` — پیکربندی و برندینگ نصب‌کننده Calamares (`settings.conf`، `modules/`، `branding/` و ابزار کمکی `yaran-grub-install`).
 - `assets/fastfetch/` — پیکربندی و لوگوی Fastfetch که در نشست‌های تعاملی Bash نمایش داده می‌شود.
-- `assets/server/` — نصب‌کننده CLI سرور: فایل `/usr/local/bin/install-yaran`، قانون sudoers مربوطه، و واحد `yaran-installer.service` که آن را روی کنسول زنده آغاز می‌کند.
 
 ایمیج‌های دسکتاپ دارایی‌ها را در `/.temp_assets/` داخل chroot آماده می‌کنند (`stage-assets.sh`)، در هوک‌های بعدی از آن‌ها استفاده می‌کنند و دایرکتوری موقت را در `cleanup-assets.sh` حذف می‌کنند تا هیچ چیز موقتی در ایمیج باقی نماند.
 
@@ -90,4 +87,4 @@
 
 ## معماری CI
 
-`build.yml` یک job با نام `validate` را اجرا می‌کند (آزمون‌های واحد، اعتبارسنجی `--validate` همه مانیفست‌ها، و اجرای `bash -n` روی همه اسکریپت‌های shell) و سپس برای هر نسخه به workflow قابل استفاده مجدد `image.yml` می‌تازد: نسخه‌های Minimal و Extended روی `ubuntu-latest`، نسخه ARM64 روی یک runner بومی `ubuntu-24.04-arm`، و نسخه Server روی `ubuntu-latest`. هر job از `image.yml` دستور `docker run --privileged debian:trixie bash scripts/ci-build.sh <manifest>` را اجرا می‌کند و لاگ را (همیشه) و به‌همراه آن ISO + checksum را (در صورت موفقیت) آپلود می‌کند. `release.yml` همین کار را برای هر نسخه هنگام انتشار یک GitHub release انجام می‌دهد و فایل‌ها را به release پیوست می‌کند. جزئیات را در [Releases](releases.fa.md) ببینید.
+`build.yml` یک job با نام `validate` را اجرا می‌کند (آزمون‌های واحد، اعتبارسنجی `--validate` همه مانیفست‌ها، و اجرای `bash -n` روی همه اسکریپت‌های shell) و سپس برای هر نسخه به workflow قابل استفاده مجدد `image.yml` می‌تازد: نسخه‌های Minimal و Extended، هر دو روی `ubuntu-latest`. هر job از `image.yml` دستور `docker run --privileged debian:trixie bash scripts/ci-build.sh <manifest>` را اجرا می‌کند و لاگ را (همیشه) و به‌همراه آن ISO + checksum را (در صورت موفقیت) آپلود می‌کند. `release.yml` همین کار را برای هر نسخه هنگام انتشار یک GitHub release انجام می‌دهد و فایل‌ها را به release پیوست می‌کند. جزئیات را در [Releases](releases.fa.md) ببینید.
