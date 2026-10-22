@@ -43,8 +43,8 @@ Each edition job uploads:
 - `<artifact>` — on success, `output/*.iso` and `output/*.sha256`
   (`compression-level: 0`, so the ISO is stored without re-compression).
 
-Artifact names: `yaran-amd64-minimal`, `yaran-amd64-extended`,
-(each with a `-log` sibling).
+Artifact names: `yaran-amd64-minimal` and `yaran-amd64-extended`. Each
+also has a `-log` sibling artifact.
 
 ## How releases work
 
