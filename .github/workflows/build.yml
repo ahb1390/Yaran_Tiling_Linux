@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'Yaran-2.0-*.json'
+      - 'Yaran*.json'
       - 'build.py'
       - 'hooks/**'
       - 'scripts/**'
@@ -18,7 +18,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'Yaran-2.0-*.json'
+      - 'Yaran*.json'
       - 'build.py'
       - 'hooks/**'
       - 'scripts/**'
@@ -57,6 +57,9 @@ jobs:
           - config: Yaran-2.0-amd64-minimal.json
             runner: ubuntu-latest
             artifact: yaran-amd64-minimal
+          - config: Yaran-2.1-amd64-sway-minimal.json
+            runner: ubuntu-latest
+            artifact: yaran-amd64-sway-minimal
           - config: Yaran-2.0-amd64-extended.json
             runner: ubuntu-latest
             artifact: yaran-amd64-extended
@@ -65,4 +68,3 @@ jobs:
       config: ${{ matrix.config }}
       runner: ${{ matrix.runner }}
       artifact: ${{ matrix.artifact }}
-

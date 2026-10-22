@@ -1,0 +1,3 @@
+# Per-user entrypoint: system defaults first, personal overrides last.
+include /etc/sway/config
+include ~/.config/sway/conf.d/*.conf

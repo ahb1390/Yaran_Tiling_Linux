@@ -1,0 +1,8 @@
+font=Vazirmatn 10
+background-color=#07140b
+text-color=#dcfce7
+border-color=#16a34a
+border-size=2
+border-radius=8
+padding=12
+default-timeout=5000

@@ -1,0 +1,11 @@
+# Core command variables shared by the Sway modules.
+set $mod Mod4
+set $term foot
+set $menu wofi --show drun
+
+# SwayOSD applies the requested value and displays its on-screen indicator.
+set $volume_up swayosd-client --output-volume 5
+set $volume_down swayosd-client --output-volume -5
+set $volume_mute swayosd-client --output-volume mute-toggle
+set $brightness_up swayosd-client --brightness +10
+set $brightness_down swayosd-client --brightness -10

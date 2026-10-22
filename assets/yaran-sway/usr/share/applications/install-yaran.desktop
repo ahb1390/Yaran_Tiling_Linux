@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Install Yaran Tiling Linux
+Comment=Install Yaran Tiling Linux to this computer
+Exec=pkexec calamares
+Icon=yaran
+Terminal=false
+Categories=System;Settings;

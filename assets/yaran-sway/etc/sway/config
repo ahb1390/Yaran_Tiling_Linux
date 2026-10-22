@@ -1,0 +1,4 @@
+# Yaran Tiling Linux — system-wide Sway configuration entrypoint.
+# Keep settings and bindings in ordered modules.
+include /etc/sway/variables
+include /etc/sway/config.d/*.conf
