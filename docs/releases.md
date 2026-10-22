@@ -33,9 +33,8 @@ It has two stages:
 
 1. **`validate`** — unit tests, `--validate` on every manifest, and
    `bash -n` over every shell script. No image is built if this fails.
-2. **Edition builds** — Minimal, Extended (both `ubuntu-latest`), ARM64
-   (native `ubuntu-24.04-arm` runner), and Server, each in a privileged
-   `debian:trixie` container running `scripts/ci-build.sh`.
+2. **Edition builds** — Minimal and Extended, both on `ubuntu-latest`, each
+   in a privileged `debian:trixie` container running `scripts/ci-build.sh`.
 
 Each edition job uploads:
 
@@ -45,12 +44,12 @@ Each edition job uploads:
   (`compression-level: 0`, so the ISO is stored without re-compression).
 
 Artifact names: `yaran-amd64-minimal`, `yaran-amd64-extended`,
-`yaran-arm64`, `yaran-server-amd64` (each with a `-log` sibling).
+(each with a `-log` sibling).
 
 ## How releases work
 
 The [Release Build workflow](https://github.com/ahb1390/Yaran_linux/actions/workflows/release.yml)
-triggers when a GitHub release is **published**. It builds all four
+triggers when a GitHub release is **published**. It builds both desktop
 editions with the same `image.yml` job and, because `release: true`, each
 job attaches its `output/*.iso` and `output/*.sha256` to the release via
 `softprops/action-gh-release` with `fail_on_unmatched_files: true` — if a
@@ -63,13 +62,13 @@ the ISOs correspond exactly to that tagged source.
 ## Cutting a release (maintainers)
 
 1. Make sure the `rebrand/yaran-linux` (or target) branch is green: the
-   latest Build workflow run must have succeeded for all four editions.
+   latest Build workflow run must have succeeded for both desktop editions.
 2. Decide the version string. The version in the manifests (`version`,
    `iso_filename`, `os_release`) should match the intended tag — update
    the manifests in a pull request first if they differ.
 3. Create and **publish** a GitHub release with a tag such as `v2.0.1`.
    Draft releases do not trigger the workflow.
-4. Wait for the Release Build run to finish, then verify all four
+4. Wait for the Release Build run to finish, then verify both
    ISO/checksum pairs are attached to the release.
 5. Spot-verify a checksum (see below) and, ideally, boot one ISO in a VM
    before announcing the release.
@@ -96,6 +95,6 @@ identical even from the same commit.
 
 ## Status
 
-All four editions currently build successfully in CI. No GitHub release
-has been published yet; until one is, treat CI artifacts as the available
-pre-release builds.
+The CI workflow is configured to build the Minimal and Extended AMD64 desktop
+editions. No GitHub release has been published yet; until one is, treat CI
+artifacts as the available pre-release builds.
