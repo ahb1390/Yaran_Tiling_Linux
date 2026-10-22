@@ -80,6 +80,7 @@ class SwayManifestTests(unittest.TestCase):
         defaults = (ROOT / "hooks/desktop/sway-defaults.sh").read_text()
         self.assertIn("/etc/skel/APP", defaults)
         self.assertIn("/etc/skel/Projects", defaults)
+        self.assertIn("install -d -m 0755 /usr/share/wallpapers", defaults)
         self.assertIn('"$live_home/.config"', defaults)
 
     def test_installer_keeps_graphical_calamares_and_sway_login(self):
