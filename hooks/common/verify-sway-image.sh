@@ -4,6 +4,7 @@ set -euo pipefail
 
 fail=0
 problem() { echo "verify-sway-image: FAIL: $*" >&2; fail=1; }
+ok() { echo "verify-sway-image: ok: $*"; }
 has_package() {
     # Avoid a dpkg-query | grep -q pipeline: under pipefail the consumer can
     # exit early and turn a successful query into a SIGPIPE failure.
