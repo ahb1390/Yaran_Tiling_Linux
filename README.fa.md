@@ -4,13 +4,12 @@
 
 [![Build](https://github.com/ahb1390/Yaran_linux/actions/workflows/build.yml/badge.svg)](https://github.com/ahb1390/Yaran_linux/actions/workflows/build.yml)
 ![Debian](https://img.shields.io/badge/base-Debian%2013-A81D33?logo=debian&logoColor=white)
-![Architectures](https://img.shields.io/badge/architectures-amd64%20%7C%20arm64-4B6CB7)
+![Architecture](https://img.shields.io/badge/architecture-amd64-4B6CB7)
 
 یاران لینوکس یک سیستم‌عامل مبتنی بر Debian 13 است که به‌صورت تصاویر Live ISO
 قابل بازتولید ساخته می‌شود. این توزیع یک دسکتاپ KDE Plasma حرفه‌ای را در دو
-نسخهٔ AMD64 و یک تصویر دسکتاپ ARM64 عرضه می‌کند و علاوه بر آن یک نسخهٔ سرور
-بدون دسکتاپ با نصب‌کنندهٔ متنی راهنما دارد. هر تصویر با یک مانیفست JSON تعریف
-می‌شود و همهٔ آن‌ها با یک سازندهٔ (builder) عمومی پایتونی ساخته می‌شوند.
+نسخهٔ AMD64 با نام‌های Minimal و Extended عرضه می‌کند. هر تصویر با یک مانیفست
+JSON تعریف می‌شود و هر دو با یک سازندهٔ (builder) عمومی پایتونی ساخته می‌شوند.
 
 ## وضعیت پروژه
 
@@ -30,12 +29,8 @@
 |---|---|---|
 | دسکتاپ Minimal (AMD64) | `Yaran-2.0-amd64-minimal.json` | ✅ ساخت و تست‌شده در CI |
 | دسکتاپ Extended (AMD64) | `Yaran-2.0-amd64-extended.json` | ✅ ساخت و تست‌شده در CI |
-| دسکتاپ (ARM64) | `Yaran-2.0-arm64.json` | ✅ ساخته‌شده در CI روی runner بومی ARM64 |
-| سرور (AMD64) | `Yaran-Server-2.0-amd64.json` | ✅ ساخت و تست‌شده در CI |
-| دسکتای قدیمی (AMD64) | `Yaran-2.0-amd64.json` | ✅ ساخت و تست‌شده در CI (در Releaseها منتشر نمی‌شود) |
 
-امضای Secure Boot، bootstrap بین معماری‌ها و معماری‌هایی غیر از
-amd64/arm64/armhf **پیاده‌سازی نشده‌اند** (📋).
+امضای Secure Boot و bootstrap بین معماری‌ها **پیاده‌سازی نشده‌اند** (📋).
 
 ## اهداف طراحی
 
@@ -80,13 +75,6 @@ xdg-desktop-portal، فونت‌های کامل فارسی/CJK/ایموجی و �
 فقط Node.js نسخهٔ ۲۰ را بسته‌بندی می‌کند و افزودن مخزن APT خارجیخلاف سیاست
 مخازن پروژه است)، `python3`، `python3-pip`، `python3-venv`، `lazygit`).
 
-تصویر ARM64 موارد اختصاصی AMD64 (Google Chrome، Telegram، VirtualBox،
-دانلودهای `.deb` شخص ثالث و برخی بسته‌های VA/VDPAU و ALSA) را حذف می‌کند،
-زیرا نسخهٔ ARM64 برای آن‌ها منتشر نمی‌شود.
-
-تصویر سرور شامل ابزارهای مدیریتی، عیب‌یابی، ذخیره‌سازی، شبکه، امنیت،
-کانتینر (Podman) و مجازی‌سازی (QEMU guest agent) است؛ SSH نصب شده اما تا
-زمانی که مدیر سیستم آن را فعال کند، غیرفعال است.
 
 ## ساخت یک ISO
 
@@ -100,9 +88,7 @@ python3 build.py Yaran-2.0-amd64-minimal.json --validate
 sudo python3 build.py Yaran-2.0-amd64-minimal.json --workdir build --outdir output
 ```
 
-برای نسخهٔ کامل از `Yaran-2.0-amd64-extended.json`، برای تصویر ARM64 (که به
-میزبان بومی ARM64 نیاز دارد) از `Yaran-2.0-arm64.json` و برای سرور بدون
-دسکتاپ از `Yaran-Server-2.0-amd64.json` استفاده کنید. فایل‌های خروجی در
+برای نسخهٔ کامل از `Yaran-2.0-amd64-extended.json` استفاده کنید. فایل‌های خروجی در
 `output/` نوشته می‌شوند؛ وضعیت موقت ساخت در شاخهٔ کاری (work) نگهداری می‌شود
 و در Git نادیده گرفته می‌شود.
 
@@ -145,8 +131,7 @@ qemu-system-x86_64 -m 4096 -smp 2 -boot d \
 منوی GRUB ظاهر می‌شود و سپس نشست زنده به‌طور خودکار آغاز می‌شود. برای دیدن
 پیام‌های بوت، ورودی `live, debug` و برای رفع مشکل نمایش گرافیکی سفید، ورودی
 `live, nomodeset` را انتخاب کنید. از پنجرهٔ گرافیکی QEMU استفاده کنید؛ ورودی‌های
-پیش‌فرض بوت کنسول سریال (serial) پیکربندی نمی‌کنند. تصاویر ARM64 به یک ماشین
-مجازی ARM64 و firmware سازگار UEFI نیاز دارند.
+پیش‌فرض بوت کنسول سریال (serial) پیکربندی نمی‌کنند.
 
 اگر یک تصویر قدیمی AMD64 پیش از نمایش GRUB روی `Booting from DVD/CD...`
 متوقف می‌شود، آن را با سازندهٔ فعلی دوباره بسازید. ساختهای قدیمی‌تر loader
@@ -161,7 +146,7 @@ qemu-system-x86_64 -m 4096 -smp 2 -boot d \
   [انتشار](docs/releases.fa.md) توضیح داده شده است.
 - **انتشارها:** انتشار یک Release در GitHub
   [Workflow انتشار](https://github.com/ahb1390/Yaran_linux/actions/workflows/release.yml)
-  را فعال می‌کند که هر چهار تصویر را دوباره ساخته و ISOها و checksumها را
+  را فعال می‌کند که هر دو نسخهٔ دسکتاپ را دوباره ساخته و ISOها و checksumها را
   به Release پیوست می‌کند. تاکنون Release‌ای منتشر نشده است (🟡).
 
 هر تصویر دریافتی را پیش از استفاده تأیید کنید:
@@ -177,22 +162,13 @@ sha256sum -c Yaran-2.0-amd64-minimal.iso.sha256
 `Install Yaran Linux.desktop` روی دسکتاپ در دسترس است؛ آن را اجرا کنید تا
 سیستم روی دیسک نصب شود.
 
-**سرور:** رسانهٔ زنده را با کاربر `admin` (گذرواژهٔ زنده: `yaranlinux`) بوت
-کنید. نصب‌کنندهٔ متنی به‌طور خودکار روی کنسول اول آغاز می‌شود؛ دیسک‌های
-استفاده‌نشده را با ظرفیت و مدل نشان می‌دهد، نام میزبان، منطقهٔ زمانی و
-گذرواژهٔ جدید مدیر را می‌پرسد و پیش از پاک‌کردن دیسک انتخاب‌شده تأیید صریح
-می‌خواهد. همچنین می‌توانید از یک کنسول محلی دستور `sudo install-yaran` را
-اجرا کنید. SSH نصب شده اما عمداً روی رسانهٔ زنده تا زمانی که مدیر گذرواژهٔ
-زنده را عوض کرده و سرویس را فعال کند، غیرفعال است.
-
 هرگز گذرواژه‌های منتشرشدهٔ زنده را در یک سیستم نصب‌شدهٔ تولیدی استفاده نکنید.
 
 ## ساختار پروژه
 
 - `build.py` — سازندهٔ قابل پیکربندی ISOهای Live خانوادهٔ Debian
 - `Yaran-2.0-*.json` — مانیفست‌های تصویر دسکتاپ
-- `Yaran-Server-2.0-amd64.json` — مانیفست سرور بدون دسکتاپ برای AMD64
-- `hooks/` — اسکریپت‌های سفارشی‌سازی تصویر (`common/`، `desktop/`، `server/`)
+- `hooks/` — اسکریپت‌های سفارشی‌سازی تصویر (`common/`، `desktop/`)
 - `scripts/ci-build.sh` — اسکریپت ساخت مشترک Debian که در CI استفاده می‌شود
 - `examples/` — مانیفست‌های اولیهٔ Minimal برای Debian و Ubuntu
 - `assets/` — برندینگ Plasma، SDDM، Calamares، Fastfetch و پس‌زمینه‌ها
