@@ -68,8 +68,13 @@ grep -qx 'Theme=yaran' /etc/plymouth/plymouthd.conf 2>/dev/null || problem 'Plym
 if command -v sway >/dev/null 2>&1; then
     runtime_dir=$(mktemp -d /tmp/yaran-sway-config-check.XXXXXX)
     chmod 0700 "$runtime_dir"
-    if validation_output=$(XDG_RUNTIME_DIR="$runtime_dir" sway -C -c /etc/sway/config 2>&1); then
-        ok 'Sway configuration parses successfully'
+    # Run Sway's validator against a headless/pixman backend; the chroot has
+    # no physical seat, display server, or logind user session. These wlroots
+    # variables prevent config validation from trying to open real hardware.
+    if validation_output=$(XDG_RUNTIME_DIR="$runtime_dir" \
+        WLR_BACKENDS=headless WLR_RENDERER=pixman WLR_LIBINPUT_NO_DEVICES=1 \
+        sway -C -c /etc/sway/config 2>&1); then
+        ok 'Sway configuration parses successfully with the headless backend'
     else
         problem "Sway configuration validation failed: $validation_output"
     fi
