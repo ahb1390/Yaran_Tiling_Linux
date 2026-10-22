@@ -5,7 +5,6 @@ on:
     branches: [main]
     paths:
       - 'Yaran-2.0-*.json'
-      - 'Yaran-Server-2.0-*.json'
       - 'build.py'
       - 'hooks/**'
       - 'scripts/**'
@@ -20,7 +19,6 @@ on:
     branches: [main]
     paths:
       - 'Yaran-2.0-*.json'
-      - 'Yaran-Server-2.0-*.json'
       - 'build.py'
       - 'hooks/**'
       - 'scripts/**'
@@ -56,28 +54,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - config: Yaran-2.0-amd64.json
-            runner: ubuntu-latest
-            artifact: yaran-amd64
           - config: Yaran-2.0-amd64-minimal.json
             runner: ubuntu-latest
             artifact: yaran-amd64-minimal
           - config: Yaran-2.0-amd64-extended.json
             runner: ubuntu-latest
             artifact: yaran-amd64-extended
-          - config: Yaran-2.0-arm64.json
-            runner: ubuntu-24.04-arm
-            artifact: yaran-arm64
     uses: ./.github/workflows/image.yml
     with:
       config: ${{ matrix.config }}
       runner: ${{ matrix.runner }}
       artifact: ${{ matrix.artifact }}
 
-  build-server:
-    needs: validate
-    uses: ./.github/workflows/image.yml
-    with:
-      config: Yaran-Server-2.0-amd64.json
-      runner: ubuntu-latest
-      artifact: yaran-server-amd64
