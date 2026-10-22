@@ -4,13 +4,12 @@
 
 [![Build](https://github.com/ahb1390/Yaran_linux/actions/workflows/build.yml/badge.svg)](https://github.com/ahb1390/Yaran_linux/actions/workflows/build.yml)
 ![Debian](https://img.shields.io/badge/base-Debian%2013-A81D33?logo=debian&logoColor=white)
-![Architectures](https://img.shields.io/badge/architectures-amd64%20%7C%20arm64-4B6CB7)
+![Architecture](https://img.shields.io/badge/architecture-amd64-4B6CB7)
 
 Yaran Linux is a Debian 13-based operating system built as reproducible live
-ISO images. It ships a polished KDE Plasma desktop in two AMD64 editions plus
-an ARM64 desktop image, and a headless server edition with a guided
-command-line installer. Every image is defined by a JSON manifest and built by
-a single, distribution-agnostic Python builder.
+ISO images. It ships a polished KDE Plasma desktop in two AMD64 editions:
+Minimal and Extended. Each image is defined by a JSON manifest and built by a
+single, distribution-agnostic Python builder.
 
 ## Project status
 
@@ -30,12 +29,8 @@ Current status of the editions:
 |---|---|---|
 | Desktop Minimal (AMD64) | `Yaran-2.0-amd64-minimal.json` | ✅ Built and tested in CI |
 | Desktop Extended (AMD64) | `Yaran-2.0-amd64-extended.json` | ✅ Built and tested in CI |
-| Desktop (ARM64) | `Yaran-2.0-arm64.json` | ✅ Built in CI on a native ARM64 runner |
-| Server (AMD64) | `Yaran-Server-2.0-amd64.json` | ✅ Built and tested in CI |
-| Legacy desktop (AMD64) | `Yaran-2.0-amd64.json` | ✅ Built and tested in CI (not published in releases) |
 
-Secure Boot signing, cross-architecture bootstrap, and architectures other
-than amd64/arm64/armhf are **not implemented** (📋).
+Secure Boot signing and cross-architecture bootstrap are **not implemented** (📋).
 
 ## Design goals
 
@@ -81,15 +76,7 @@ trixie only packages Node.js 20.x, and adding an external APT repository
 violates the repository policy), `python3`, `python3-pip`, `python3-venv`,
 `lazygit`).
 
-The ARM64 image omits the AMD64-only components (Google Chrome, Telegram,
-VirtualBox, the vendor `.deb` downloads, and some VA/VDPAU and ALSA
-packages) because those do not publish ARM64 builds.
-
-The server image ships administration, diagnostics, storage, networking,
-security, container (Podman), and virtualization (QEMU guest agent) tools
-with SSH installed but disabled until the administrator enables it.
-
-## Building an ISO
+ ## Building an ISO
 
 The builder supports configurable Debian-family live images. See the
 [builder guide](docs/builder.md) for host dependencies, architecture
@@ -101,10 +88,8 @@ python3 build.py Yaran-2.0-amd64-minimal.json --validate
 sudo python3 build.py Yaran-2.0-amd64-minimal.json --workdir build --outdir output
 ```
 
-Use `Yaran-2.0-amd64-extended.json` for the full edition,
-`Yaran-2.0-arm64.json` for the ARM64 image (requires a native ARM64 host),
-and `Yaran-Server-2.0-amd64.json` for the headless server. Generated files
-are written to `output/`; temporary build state is kept in the work
+Use `Yaran-2.0-amd64-extended.json` for the full edition. Generated
+files are written to `output/`; temporary build state is kept in the work
 directory and ignored by Git.
 
 More guides:
@@ -145,8 +130,7 @@ qemu-system-x86_64 -m 4096 -smp 2 -boot d \
 The GRUB menu appears, then the live session starts automatically. Select
 the `live, debug` entry to see boot messages, or `live, nomodeset` when
 troubleshooting a blank graphical display. Use QEMU's graphical window; the
-default boot entries do not configure a serial console. ARM64 images require
-an ARM64 virtual machine and matching UEFI firmware.
+default boot entries do not configure a serial console.
 
 If an older AMD64 image stalls at `Booting from DVD/CD...` before GRUB
 appears, rebuild it with the current builder. Earlier builds truncated
@@ -162,8 +146,8 @@ could not boot via BIOS.
   download and verify them.
 - **Releases:** publishing a GitHub release triggers
   [the release workflow](https://github.com/ahb1390/Yaran_linux/actions/workflows/release.yml),
-  which rebuilds all four images and attaches the ISOs and checksums to the
-  release. No release has been published yet (🟡).
+  which rebuilds both desktop editions and attaches the ISOs and checksums to
+  the release. No release has been published yet (🟡).
 
 Verify any downloaded image before use:
 
@@ -177,23 +161,13 @@ sha256sum -c Yaran-2.0-amd64-minimal.iso.sha256
 `admin` (live password: `yaranlinux`). The installer is available as
 `Install Yaran Linux.desktop` on the desktop; run it to install to disk.
 
-**Server:** boot the live media as `admin` (live password: `yaranlinux`).
-The text-interface installer starts automatically on the first console; it
-lists unused disks with capacity and model, asks for an installed hostname,
-time zone, and a new admin password, and requires explicit confirmation
-before erasing the selected disk. You can also run `sudo install-yaran`
-from a local console. SSH is installed but intentionally disabled on live
-media until the administrator changes the live password and enables the
-service.
-
-Never use the published live passwords on a production installed system.
+ Never use the published live passwords on a production installed system.
 
 ## Project layout
 
 - `build.py` — configurable Debian-family live ISO builder
 - `Yaran-2.0-*.json` — desktop image manifests
-- `Yaran-Server-2.0-amd64.json` — headless AMD64 server manifest
-- `hooks/` — image customization scripts (`common/`, `desktop/`, `server/`)
+- `hooks/` — image customization scripts (`common/`, `desktop/`)
 - `scripts/ci-build.sh` — the shared Debian build script used by CI
 - `examples/` — minimal Debian and Ubuntu starting-point manifests
 - `assets/` — Plasma, SDDM, Calamares, Fastfetch, and wallpaper branding
