@@ -136,9 +136,6 @@ for the exact execution order.
 |---|---|---|
 | `Yaran-2.0-amd64-minimal.json` | Desktop Minimal | Base KDE Plasma desktop + Calamares |
 | `Yaran-2.0-amd64-extended.json` | Desktop Extended | Adds GIMP, VirtualBox, VSCodium, Obsidian, dev toolchain |
-| `Yaran-2.0-arm64.json` | Desktop ARM64 | Omits AMD64-only applications |
-| `Yaran-Server-2.0-amd64.json` | Server | Headless; CLI installer; SSH disabled on live media |
-| `Yaran-2.0-amd64.json` | Legacy desktop | Kept for compatibility; not built by CI |
 
 ## Adding packages safely
 
@@ -158,7 +155,7 @@ for the exact execution order.
    resolves dependencies from your configured repositories.
 4. **Architecture-specific additions** must be guarded. Vendor hooks in
    this repository check `dpkg --print-architecture` and skip cleanly on
-   other architectures, which is what keeps the ARM64 image buildable.
+   other architectures, which prevents incompatible packages from entering the AMD64 desktop images.
    Never add an amd64-only package to a shared list without such a guard.
 5. **Keep the set lean.** Package additions should solve a common need,
    hardware requirement, security issue, or accessibility problem.
