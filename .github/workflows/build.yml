@@ -50,21 +50,8 @@ jobs:
 
   build-desktop:
     needs: validate
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - config: Yaran-2.0-amd64-minimal.json
-            runner: ubuntu-latest
-            artifact: yaran-amd64-minimal
-          - config: Yaran-2.1-amd64-sway-minimal.json
-            runner: ubuntu-latest
-            artifact: yaran-amd64-sway-minimal
-          - config: Yaran-2.0-amd64-extended.json
-            runner: ubuntu-latest
-            artifact: yaran-amd64-extended
     uses: ./.github/workflows/image.yml
     with:
-      config: ${{ matrix.config }}
-      runner: ${{ matrix.runner }}
-      artifact: ${{ matrix.artifact }}
+      config: Yaran-2.1-amd64-sway-minimal.json
+      runner: ubuntu-latest
+      artifact: yaran-amd64-sway-minimal
