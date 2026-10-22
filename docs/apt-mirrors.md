@@ -8,9 +8,8 @@ Every Yaran image ships the smallest possible APT configuration:
 
 | Image | Repositories |
 |---|---|
-| Desktop Standard / ARM64 | `trixie`, `trixie-updates`, `trixie-security` |
-| Desktop Minimal / Extended | the three above **plus** `trixie-backports` |
-| Server | `trixie`, `trixie-updates`, `trixie-security` |
+| Desktop Minimal (AMD64) | `trixie`, `trixie-updates`, `trixie-security`, `trixie-backports` |
+| Desktop Extended (AMD64) | `trixie`, `trixie-updates`, `trixie-security`, `trixie-backports` |
 
 Rules enforced by `hooks/common/verify-image.sh` at build time (a violation
 fails the build):
