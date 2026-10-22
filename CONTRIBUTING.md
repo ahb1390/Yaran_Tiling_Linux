@@ -23,7 +23,7 @@ and translations are maintained.
 - The default branch is `rebrand/yaran-linux`; feature work happens in
   branches cut from it.
 - Create a focused branch per change, e.g. `docs/troubleshooting-fa` or
-  `fix/arm64-package-list`.
+  `fix/manifest-package-list`.
 - Do not push directly to the default branch. Open a pull request instead.
 
 ## Making changes
@@ -33,7 +33,7 @@ Scope of a typical contribution:
 | Change type | Where | Rules |
 |---|---|---|
 | Packages for an edition | `Yaran-2.0-*.json` manifests | Validate all manifests; keep the set lean; guard architecture-specific additions |
-| System configuration | `hooks/desktop/`, `hooks/server/`, `hooks/common/` | Hooks are root code: keep them readable, idempotent where possible, and `set -e` safe |
+| System configuration | `hooks/desktop/`, `hooks/common/` | Hooks are root code: keep them readable, idempotent where possible, and `set -e` safe |
 | Builder behavior | `build.py` | Add or extend unit tests in `tests/`; keep the builder distribution-agnostic — no Yaran branding in code |
 | Branding | `assets/` | Follow the [theme guide](docs/theme.md); update it if you add themed surfaces |
 | Documentation | `README.md`, `docs/`, `CONTRIBUTING.md` | Update **both** language versions (see below) |
@@ -91,7 +91,7 @@ Rules for contributors:
 ## Commit messages and pull requests
 
 - Write concise, imperative commit messages
-  (`Fix ARM64 package list`, not `fixed the package list`).
+  (`Fix manifest package list`, not `fixed the package list`).
 - In the pull request description, state what changed and why, which
   manifests or images are affected, and exactly what you tested (commands
   run, ISO booted or not).
