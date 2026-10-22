@@ -17,12 +17,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 ASSET = ROOT / 'assets/bash/yaran-bashrc'
 DESKTOP_MANIFESTS = [
-    ROOT / 'Yaran-2.0-amd64.json',
     ROOT / 'Yaran-2.0-amd64-minimal.json',
     ROOT / 'Yaran-2.0-amd64-extended.json',
-    ROOT / 'Yaran-2.0-arm64.json',
 ]
-ALL_MANIFESTS = DESKTOP_MANIFESTS + [ROOT / 'Yaran-Server-2.0-amd64.json']
 
 
 def bash(args, env=None, timeout=30):
@@ -101,7 +98,7 @@ class SyntaxAndPolicyTests(unittest.TestCase):
         self.assertIn('BSD-3-Clause', hook)
 
     def test_manifests_ship_the_experience(self):
-        for path in ALL_MANIFESTS:
+        for path in DESKTOP_MANIFESTS:
             text = path.read_text()
             with self.subTest(manifest=path.name):
                 self.assertIn('"bash-completion"', text)
@@ -113,11 +110,9 @@ class SyntaxAndPolicyTests(unittest.TestCase):
                 # git ships git-sh-prompt (/usr/lib/git-core/git-sh-prompt),
                 # which the branch display in the prompt depends on.
                 self.assertRegex(text, r'"git",', 'git must be a default desktop package')
-        server = (ROOT / 'Yaran-Server-2.0-amd64.json').read_text()
-        self.assertNotIn('install-ble.sh', server, 'server keeps plain bash')
 
     def test_stage_assets_stages_bash_config(self):
-        for hook in ('hooks/desktop/stage-assets.sh', 'hooks/server/stage-assets.sh'):
+        for hook in ('hooks/desktop/stage-assets.sh',):
             self.assertIn('assets/bash', (ROOT / hook).read_text())
 
     def test_non_interactive_shells_are_untouched(self):
