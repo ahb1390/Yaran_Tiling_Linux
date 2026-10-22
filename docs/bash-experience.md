@@ -14,9 +14,6 @@ sane history/alias defaults — without changing anyone's login shell.
 | Experience config | `/usr/share/yaran/bash/yaran-bashrc`, sourced from `/etc/bash.bashrc` | all images |
 | ble.sh v0.4.0-devel3 (BSD-3-Clause, pinned SHA-256) | `/usr/share/ble.sh` via `hooks/common/install-ble.sh` | desktop images only |
 
-The server image gets completion, history, colors and the git prompt but
-not ble.sh — servers keep a plain, predictable shell.
-
 ## How it reaches users
 
 Debian's bash reads `/etc/bash.bashrc` for **every** interactive shell, so
