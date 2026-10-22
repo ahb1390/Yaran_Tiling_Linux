@@ -5,6 +5,7 @@ echo 'Installing Yaran Sway defaults'
 install -d -m 0755 /etc/sway /etc/sway/config.d
 cp -a /.temp_assets/yaran-sway/etc/sway/. /etc/sway/
 cp -a /.temp_assets/yaran-sway/etc/skel/. /etc/skel/
+install -d -m 0755 /usr/share/wallpapers
 cp -a /.temp_assets/wallpapers/. /usr/share/wallpapers/
 
 install -d -m 0755 /usr/share/backgrounds/yaran
