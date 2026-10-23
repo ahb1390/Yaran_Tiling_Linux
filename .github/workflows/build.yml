@@ -54,4 +54,4 @@ jobs:
     with:
       config: Yaran-2.1-amd64-sway-minimal.json
       runner: ubuntu-latest
-      artifact: yaran-amd64-sway-minimal-2.1.2
+      artifact: yaran-amd64-sway-minimal-2.1.3
