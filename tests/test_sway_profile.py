@@ -101,12 +101,15 @@ class SwayManifestTests(unittest.TestCase):
 
     def test_sddm_theme_and_graphical_boot_are_configured(self):
         stage = (ROOT / "hooks/desktop/stage-sway-assets.sh").read_text()
-        self.assertIn("assets/yaran-plasma-theme/usr/share/sddm/themes/yaran-greeter", stage)\n        # The Sway profile installs a pinned upstream Slice theme at image-build time.
+        self.assertIn("assets/yaran-plasma-theme/usr/share/sddm/themes/yaran-greeter", stage)
+        # The Sway profile installs a pinned upstream Slice theme at image-build time.
         hook = (ROOT / "hooks/desktop/sway-display-manager.sh").read_text()
         self.assertIn("Current=sddm-slice", hook)
         self.assertIn("/usr/share/sddm/themes/sddm-slice", hook)
         self.assertIn("DisplayServer=x11", hook)
-        self.assertIn("cat > /etc/sddm.conf", hook)\n        self.assertIn("codeload.github.com/EricKotato/sddm-slice", hook)\n        self.assertIn("theme.conf.user", hook)
+        self.assertIn("cat > /etc/sddm.conf", hook)
+        self.assertIn("codeload.github.com/EricKotato/sddm-slice", hook)
+        self.assertIn("theme.conf.user", hook)
         self.assertIn("/etc/systemd/system/default.target", hook)
         autologin = (ROOT / "hooks/desktop/sway-live-autologin.sh").read_text()
         self.assertIn("cat > /etc/sddm.conf", autologin)
