@@ -108,27 +108,44 @@ finally:
 PY
 }
 
-graphical_screen() {
+# Detect the actual Sway session, not merely any graphical pixels. The boot
+# splash and SDDM greeter are graphical too; sending Super+Enter to either can
+# interrupt boot or submit an empty login attempt. Yaran's Waybar is a dark
+# 36px top bar with bright text, which is a stronger session-ready signal.
+sway_desktop_screen() {
     python3 - "$screenshot" <<'PY'
 from PIL import Image
 import sys
 
 path = sys.argv[1]
 try:
-    image = Image.open(path).convert("RGB").resize((160, 100))
+    image = Image.open(path).convert("RGB")
 except Exception as exc:
     print(f"live-boot-smoke: screenshot could not be read: {exc}")
     raise SystemExit(1)
-pixels = list(image.getdata())
-lit = sum(1 for r, g, b in pixels if max(r, g, b) > 24)
-ratio = lit / max(1, len(pixels))
+
+width, height = image.size
+bar_height = min(height, max(24, round(height * 0.075)))
+bar = image.crop((0, 0, width, bar_height))
+pixels = list(bar.getdata())
+if not pixels:
+    print("live-boot-smoke: screenshot top bar is empty")
+    raise SystemExit(1)
+
+mean_luma = sum((r + g + b) / 3 for r, g, b in pixels) / len(pixels)
+bright_ratio = sum(1 for r, g, b in pixels if max(r, g, b) >= 140) / len(pixels)
 colors = len(set(pixels))
-print(f"live-boot-smoke: screen lit-pixel ratio={ratio:.3f}, colors={colors}")
-# A blinking cursor on an otherwise black screen cannot pass this threshold.
-raise SystemExit(0 if ratio >= 0.025 and colors >= 100 else 1)
+print(
+    "live-boot-smoke: Waybar candidate "
+    f"mean-luma={mean_luma:.1f}, bright-pixel ratio={bright_ratio:.3f}, colors={colors}"
+)
+
+# Waybar is dark with visible glyphs. Reject both the black-topped Plymouth
+# image (no glyphs) and the light SDDM greeter (mean luminance too high).
+is_waybar = 15 <= mean_luma <= 150 and bright_ratio >= 0.003 and colors >= 12
+raise SystemExit(0 if is_waybar else 1)
 PY
 }
-
 screen_changed() {
     python3 - "$work/before.ppm" "$screenshot" <<'PY'
 from PIL import Image, ImageChops
