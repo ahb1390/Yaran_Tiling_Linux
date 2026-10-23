@@ -82,7 +82,7 @@ Current=sddm-slice
 EOF
 rm -f /etc/sddm.conf.d/10-yaran-display-manager.conf \
       /etc/sddm.conf.d/zz-yaran-live-autologin.conf
-printf '%s\\n' '/usr/bin/sddm' > /etc/X11/default-display-manager
+printf '%s\n' '/usr/bin/sddm' > /etc/X11/default-display-manager
 ln -sfn "$graphical_target" /etc/systemd/system/default.target
 
 grep -qx 'Current=sddm-slice' /etc/sddm.conf
