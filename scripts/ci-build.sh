@@ -19,4 +19,4 @@ apt-get install -y --no-install-recommends \
 python3 -m unittest discover -s tests -v
 python3 build.py "$config" --validate
 python3 build.py "$config" --workdir build --outdir output
-bash scripts/ci-live-boot-smoke.sh "output/Yaran-Tiling-2.1.2-amd64-sway-minimal.iso"
+bash scripts/ci-live-boot-smoke.sh "output/Yaran-Tiling-2.1.3-amd64-sway-minimal.iso"
