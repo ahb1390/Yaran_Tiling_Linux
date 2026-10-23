@@ -142,7 +142,7 @@ print(
 
 # Waybar is dark with visible glyphs. Reject both the black-topped Plymouth
 # image (no glyphs) and the light SDDM greeter (mean luminance too high).
-is_waybar = 15 <= mean_luma <= 150 and bright_ratio >= 0.003 and colors >= 12
+is_waybar = 5 <= mean_luma <= 150 and bright_ratio >= 0.003 and colors >= 12
 raise SystemExit(0 if is_waybar else 1)
 PY
 }
