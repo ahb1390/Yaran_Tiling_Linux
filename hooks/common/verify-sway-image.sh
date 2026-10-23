@@ -50,14 +50,16 @@ grep -Fq 'exec waybar' /etc/sway/config.d/20-yaran-autostart.conf || problem 'Wa
 grep -Fq 'exec mako' /etc/sway/config.d/20-yaran-autostart.conf || problem 'notification daemon is not started'
 
 [ -s /usr/share/wayland-sessions/sway.desktop ] || problem 'Sway Wayland session file missing'
-[ -s /usr/share/sddm/themes/yaran-greeter/Main.qml ] || problem 'Yaran SDDM greeter theme is missing'
-[ -s /usr/share/sddm/themes/yaran-greeter/theme.conf ] || problem 'Yaran SDDM greeter theme config is missing'
+[ -s /usr/share/sddm/themes/sddm-slice/Main.qml ] || problem 'Slice SDDM greeter theme is missing'
+[ -s /usr/share/sddm/themes/sddm-slice/theme.conf ] || problem 'Yaran SDDM greeter theme config is missing'
 sddm_cfg=/etc/sddm.conf
 [ -s "$sddm_cfg" ] || problem 'Canonical /etc/sddm.conf is missing'
 if [ -s "$sddm_cfg" ]; then
     grep -qx 'DisplayServer=x11' "$sddm_cfg" || problem 'SDDM greeter must use X11'
     grep -qx 'ThemeDir=/usr/share/sddm/themes' "$sddm_cfg" || problem 'SDDM theme directory is not explicit'
-    grep -qx 'Current=yaran-greeter' "$sddm_cfg" || problem 'Yaran SDDM theme is not selected in canonical config'
+    [ -s /usr/share/sddm/themes/sddm-slice/theme.conf.user ] || problem 'Slice SDDM user theme configuration is missing'
+    [ -s /usr/share/sddm/themes/sddm-slice/LICENSE ] || problem 'Slice SDDM theme license/attribution is missing'
+    grep -qx 'Current=sddm-slice' "$sddm_cfg" || problem 'Slice SDDM theme is not selected in canonical config'
     grep -qx 'User=admin' "$sddm_cfg" || problem 'SDDM live autologin user is missing'
     grep -qx 'Session=sway.desktop' "$sddm_cfg" || problem 'SDDM autologin session must be sway.desktop'
     grep -qx 'Relogin=false' "$sddm_cfg" || problem 'SDDM autologin Relogin setting is missing'
