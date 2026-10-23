@@ -1,6 +1,6 @@
 {
   "distro_name": "Yaran Tiling",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "architecture": "amd64",
   "suite": "trixie",
   "debootstrap_variant": "minbase",
@@ -42,7 +42,7 @@
     "system-config-printer", "fwupd", "calamares", "pkexec",
     "qml6-module-org-kde-kirigami", "qml6-module-qtquick",
     "qml6-module-qtquick-controls", "qml6-module-qtquick-layouts",
-    "qml6-module-qtquick-window", "parted", "gdisk", "dosfstools", "e2fsprogs",
+    "qml6-module-qtquick-window", "qml6-module-qt5compat-graphicaleffects", "parted", "gdisk", "dosfstools", "e2fsprogs",
     "btrfs-progs", "xfsprogs", "ntfs-3g", "cryptsetup", "os-prober", "efibootmgr",
     "apparmor", "apparmor-profiles", "apparmor-utils", "nftables",
     "unattended-upgrades", "libpam-systemd", "sddm", "plymouth", "plymouth-themes",
@@ -81,8 +81,8 @@
   "squashfs_compression": "xz",
   "os_release": {
     "NAME": "Yaran Tiling Linux",
-    "PRETTY_NAME": "Yaran Tiling Linux 2.1.2 Sway Minimal (trixie) AMD64",
-    "ID": "yaran", "ID_LIKE": "debian", "VERSION": "2.1.2", "VERSION_ID": "2.1.2",
+    "PRETTY_NAME": "Yaran Tiling Linux 2.1.3 Sway Minimal (trixie) AMD64",
+    "ID": "yaran", "ID_LIKE": "debian", "VERSION": "2.1.3", "VERSION_ID": "2.1.3",
     "VARIANT": "Sway Minimal", "VARIANT_ID": "sway-minimal", "LOGO": "yaran",
     "HOME_URL": "https://github.com/ahb1390/Yaran_Tiling_Linux",
     "SUPPORT_URL": "https://github.com/ahb1390/Yaran_Tiling_Linux/issues",
@@ -103,6 +103,6 @@
   "grub_menu": {
     "background": "assets/wallpapers/Yaran Emblem/contents/images/1585x992.png"
   },
-  "iso_filename": "Yaran-Tiling-2.1.2-amd64-sway-minimal.iso",
-  "iso_volume_id": "YARAN_SWAY_212_AMD64"
+  "iso_filename": "Yaran-Tiling-2.1.3-amd64-sway-minimal.iso",
+  "iso_volume_id": "YARAN_SWAY_213_AMD64"
 }
