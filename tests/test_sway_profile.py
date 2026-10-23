@@ -24,7 +24,7 @@ class SwayManifestTests(unittest.TestCase):
             "network-manager", "network-manager-gnome",
             "pipewire", "pipewire-pulse", "pipewire-audio", "wireplumber",
             "xdg-desktop-portal", "xdg-desktop-portal-wlr", "xdg-desktop-portal-gtk",
-            "sddm", "sddm-theme-debian-elarun", "calamares", "polkitd", "mate-polkit",
+            "sddm", "calamares", "polkitd", "mate-polkit",
             "fonts-vazirmatn", "fonts-noto-core", "fonts-noto-cjk",
             "fonts-noto-color-emoji", "firmware-misc-nonfree", "bluez-firmware",
         }
@@ -91,9 +91,11 @@ class SwayManifestTests(unittest.TestCase):
             self.assertTrue((ROOT / script).is_file(), f"missing hook: {script}")
 
     def test_sddm_theme_and_graphical_boot_are_configured(self):
-        self.assertIn("sddm-theme-debian-elarun", self.cfg["packages"])
+        stage = (ROOT / "hooks/desktop/stage-sway-assets.sh").read_text()
+        self.assertIn("assets/yaran-plasma-theme/usr/share/sddm/themes/yaran-greeter", stage)
         hook = (ROOT / "hooks/desktop/sway-display-manager.sh").read_text()
-        self.assertIn("Current=debian-elarun", hook)
+        self.assertIn("Current=yaran-greeter", hook)
+        self.assertIn("/usr/share/sddm/themes/yaran-greeter", hook)
         self.assertIn("DisplayServer=x11", hook)
         self.assertIn("/etc/systemd/system/default.target", hook)
         verifier = (ROOT / "hooks/common/verify-sway-image.sh").read_text()

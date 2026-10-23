@@ -5,6 +5,9 @@ set -euo pipefail
 # Plasma-specific artwork and desktop defaults.
 install -d -m 0755 "$ROOTFS/.temp_assets/yaran-sway"
 cp -a ./assets/yaran-sway/. "$ROOTFS/.temp_assets/yaran-sway/"
+install -d -m 0755 "$ROOTFS/.temp_assets/yaran-sway/usr/share/sddm/themes/yaran-greeter"
+cp -a ./assets/yaran-plasma-theme/usr/share/sddm/themes/yaran-greeter/. \
+    "$ROOTFS/.temp_assets/yaran-sway/usr/share/sddm/themes/yaran-greeter/"
 cp -a ./assets/wallpapers "$ROOTFS/.temp_assets/"
 cp -a ./assets/calamares "$ROOTFS/.temp_assets/"
 cp -a ./assets/fastfetch "$ROOTFS/.temp_assets/"

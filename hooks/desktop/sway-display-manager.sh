@@ -11,9 +11,20 @@ echo 'Configuring SDDM for Yaran Sway live desktop'
     exit 1
 }
 
-theme_dir=/usr/share/sddm/themes/debian-elarun
+staged_theme=/.temp_assets/yaran-sway/usr/share/sddm/themes/yaran-greeter
+[ -s "$staged_theme/Main.qml" ] && [ -s "$staged_theme/theme.conf" ] || {
+    echo 'sway-display-manager: staged Yaran SDDM theme is missing or incomplete' >&2
+    exit 1
+}
+theme_dir=/usr/share/sddm/themes/yaran-greeter
+install -d -m 0755 "$theme_dir"
+cp -a "$staged_theme/." "$theme_dir/"
 [ -s "$theme_dir/Main.qml" ] && [ -s "$theme_dir/theme.conf" ] || {
-    echo 'sway-display-manager: Debian Elarun SDDM theme is missing or incomplete' >&2
+    echo 'sway-display-manager: failed to install the Yaran SDDM theme' >&2
+    exit 1
+}
+[ -s "/usr/share/wallpapers/Yaran Emblem/contents/images/1585x992.png" ] || {
+    echo 'sway-display-manager: Yaran SDDM wallpaper is missing' >&2
     exit 1
 }
 
@@ -35,7 +46,7 @@ cat > /etc/sddm.conf.d/10-yaran-display-manager.conf <<'EOF'
 DisplayServer=x11
 
 [Theme]
-Current=debian-elarun
+Current=yaran-greeter
 EOF
 
 # Explicitly select SDDM for Debian display-manager-aware tooling and boot to
@@ -43,4 +54,4 @@ EOF
 printf '%s\n' '/usr/bin/sddm' > /etc/X11/default-display-manager
 ln -sfn "$graphical_target" /etc/systemd/system/default.target
 
-echo 'sway-display-manager: SDDM + Debian Elarun theme configured; graphical.target selected'
+echo 'sway-display-manager: SDDM + Yaran greeter theme configured; graphical.target selected'
