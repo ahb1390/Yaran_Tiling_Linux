@@ -100,6 +100,8 @@ class SwayManifestTests(unittest.TestCase):
         self.assertIn("Yaran-Tiling-2.1.3-amd64-sway-minimal.iso", ci)
         smoke_source = smoke.read_text()
         self.assertIn("sway_desktop_screen() {", smoke_source)
+        self.assertIn("if ! sway_desktop_screen; then", smoke_source)
+        self.assertNotIn("if ! graphical_screen; then", smoke_source)
         self.assertIn("Waybar candidate", smoke_source)
         self.assertIn("sending Super+Enter to either can", smoke_source)
 
