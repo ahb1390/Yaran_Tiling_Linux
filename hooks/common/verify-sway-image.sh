@@ -78,12 +78,7 @@ if [ -s /usr/share/wayland-sessions/sway.desktop ]; then
     grep -Eq '^Exec=(/usr/bin/)?sway([[:space:]]|$)' /usr/share/wayland-sessions/sway.desktop || \
         problem 'Sway Wayland session entry does not start Sway'
 fi
-sddm_autologin=/etc/sddm.conf.d/zz-yaran-live-autologin.conf
-[ -s "$sddm_autologin" ] || problem 'SDDM live autologin config is missing'
-if [ -s "$sddm_autologin" ]; then
-    grep -qx 'Session=sway.desktop' "$sddm_autologin" || \
-        problem 'SDDM autologin must select the sway.desktop session explicitly'
-fi
+# Autologin is validated above in the canonical /etc/sddm.conf file.
 [ -x /usr/libexec/polkit-mate-authentication-agent-1 ] || \
     problem 'MATE PolicyKit authentication agent executable is missing'
 grep -qx 'Theme=yaran' /etc/plymouth/plymouthd.conf 2>/dev/null || problem 'Plymouth theme is not selected'
