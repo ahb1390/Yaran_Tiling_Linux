@@ -15,6 +15,8 @@ class SwayManifestTests(unittest.TestCase):
     def test_manifest_targets_debian_trixie_amd64(self):
         self.assertEqual(self.cfg["suite"], "trixie")
         self.assertEqual(self.cfg["architecture"], "amd64")
+        self.assertEqual(self.cfg["version"], "2.1.1")
+        self.assertEqual(self.cfg["iso_filename"], "Yaran-Tiling-2.1.1-amd64-sway-minimal.iso")
         self.assertEqual(self.cfg["os_release"]["VARIANT_ID"], "sway-minimal")
 
     def test_core_desktop_packages_are_present(self):
@@ -89,6 +91,13 @@ class SwayManifestTests(unittest.TestCase):
         self.assertEqual(post[-1], "hooks/common/verify-sway-image.sh")
         for script in pre + post:
             self.assertTrue((ROOT / script).is_file(), f"missing hook: {script}")
+
+    def test_live_boot_smoke_is_part_of_the_build(self):
+        ci = (ROOT / "scripts/ci-build.sh").read_text()
+        smoke = ROOT / "scripts/ci-live-boot-smoke.sh"
+        self.assertTrue(smoke.is_file())
+        self.assertIn("ci-live-boot-smoke.sh", ci)
+        self.assertIn("Yaran-Tiling-2.1.1-amd64-sway-minimal.iso", ci)
 
     def test_sddm_theme_and_graphical_boot_are_configured(self):
         stage = (ROOT / "hooks/desktop/stage-sway-assets.sh").read_text()

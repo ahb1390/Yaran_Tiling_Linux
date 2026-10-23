@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - name: Build and test
+      - name: Build, test, and boot live desktop
         env:
           IMAGE_CONFIG: ${{ inputs.config }}
         run: |
@@ -34,7 +34,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact }}-log
-          path: build.log
+          path: |
+            build.log
+            output/ci-live-boot-qemu.log
+            output/ci-live-boot-serial.log
+            output/ci-live-boot-screenshot.ppm
+          if-no-files-found: ignore
       - name: Upload image and checksum
         uses: actions/upload-artifact@v4
         with:

@@ -20,6 +20,6 @@ install -Dm 0644 ./yaran.svg "$ROOTFS/.temp_assets/yaran-sway/usr/share/icons/hi
 # Keep installer branding scoped to this Sway profile.
 branding="$ROOTFS/.temp_assets/calamares/branding/Yaran/branding.desc"
 if [ -f "$branding" ]; then
-    sed -i 's/productName: *"Yaran Linux"/productName:         "Yaran Tiling Linux"/; s/productVersion: *"2.0"/productVersion:      "2.1"/' "$branding"
+    sed -i 's/productName: *"Yaran Linux"/productName:         "Yaran Tiling Linux"/; s/productVersion: *"2.0"/productVersion:      "2.1.1"/' "$branding"
     sed -i 's|https://github.com/ahb1390/Yaran_linux|https://github.com/ahb1390/Yaran_Tiling_Linux|g' "$branding"
 fi

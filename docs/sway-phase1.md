@@ -18,14 +18,15 @@ that every laptop has already been validated.
 
 The existing 2.0 manifests and their tests are retained during the transition
 as a comparison/fallback. The new profile is named
-Yaran-2.1-amd64-sway-minimal.json.
+Yaran-2.1-amd64-sway-minimal.json; the current test image is version 2.1.1.
 
 ## Validation required before treating the image as ready
 
-CI runs manifest validation, policy tests, shell syntax checks, and the image
-builder. That is not equivalent to a full desktop boot test. Before a public
-release, boot the generated ISO in QEMU, complete a Calamares install to a
-virtual disk, boot the installed system, and verify at least:
+CI runs manifest validation, policy tests, shell syntax checks, the ISO builder,
+and a graphical QEMU smoke test that sends Super+Enter and confirms the screen
+changes as a Sway terminal opens. That still does not validate a full disk
+installation. Before a public release, complete a Calamares install to a virtual
+disk, boot the installed system, and verify at least:
 
 1. Live login, networking, terminal launcher, Waybar, notifications, and the
    installer launcher.
