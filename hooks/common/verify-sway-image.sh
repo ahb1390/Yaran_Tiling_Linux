@@ -52,11 +52,19 @@ grep -Fq 'exec mako' /etc/sway/config.d/20-yaran-autostart.conf || problem 'noti
 [ -s /usr/share/wayland-sessions/sway.desktop ] || problem 'Sway Wayland session file missing'
 [ -s /usr/share/sddm/themes/yaran-greeter/Main.qml ] || problem 'Yaran SDDM greeter theme is missing'
 [ -s /usr/share/sddm/themes/yaran-greeter/theme.conf ] || problem 'Yaran SDDM greeter theme config is missing'
-sddm_theme_cfg=/etc/sddm.conf.d/10-yaran-display-manager.conf
-[ -s "$sddm_theme_cfg" ] || problem 'Yaran SDDM display-manager config is missing'
-if [ -s "$sddm_theme_cfg" ]; then
-    grep -qx 'DisplayServer=x11' "$sddm_theme_cfg" || problem 'SDDM greeter must use X11'
-    grep -qx 'Current=yaran-greeter' "$sddm_theme_cfg" || problem 'SDDM Debian Elarun theme is not selected'
+sddm_cfg=/etc/sddm.conf
+[ -s "$sddm_cfg" ] || problem 'Canonical /etc/sddm.conf is missing'
+if [ -s "$sddm_cfg" ]; then
+    grep -qx 'DisplayServer=x11' "$sddm_cfg" || problem 'SDDM greeter must use X11'
+    grep -qx 'ThemeDir=/usr/share/sddm/themes' "$sddm_cfg" || problem 'SDDM theme directory is not explicit'
+    grep -qx 'Current=yaran-greeter' "$sddm_cfg" || problem 'Yaran SDDM theme is not selected in canonical config'
+    grep -qx 'User=admin' "$sddm_cfg" || problem 'SDDM live autologin user is missing'
+    grep -qx 'Session=sway.desktop' "$sddm_cfg" || problem 'SDDM autologin session must be sway.desktop'
+    grep -qx 'Relogin=false' "$sddm_cfg" || problem 'SDDM autologin Relogin setting is missing'
+fi
+[ -s /etc/pam.d/sddm-autologin ] || problem 'SDDM PAM autologin policy is missing'
+if grep -Eq '^(Current|Session)=lxqt|^User=.*lxqt' /etc/sddm.conf 2>/dev/null; then
+    problem 'SDDM config contains an LXQt login default'
 fi
 [ -s /etc/X11/default-display-manager ] || problem 'Debian default-display-manager file is missing'
 grep -qx '/usr/bin/sddm' /etc/X11/default-display-manager 2>/dev/null || problem 'SDDM is not Debian default display manager'

@@ -19,7 +19,11 @@ fi
 session_name=$(basename "$session_file")
 
 install -d -m 0755 /etc/sddm.conf.d
-cat > /etc/sddm.conf.d/zz-yaran-live-autologin.conf <<EOF
+# Use SDDM's canonical configuration file. The previous split drop-ins were
+# verified as files but the actual greeter still ignored autologin on boot.
+rm -f /etc/sddm.conf.d/10-yaran-display-manager.conf \
+      /etc/sddm.conf.d/zz-yaran-live-autologin.conf
+cat > /etc/sddm.conf <<EOF
 [Autologin]
 User=$live_user
 Session=$session_name

@@ -39,6 +39,7 @@ jobs:
             output/ci-live-boot-qemu.log
             output/ci-live-boot-serial.log
             output/ci-live-boot-screenshot.ppm
+            output/ci-live-boot-first-graphical-screen.ppm
           if-no-files-found: ignore
       - name: Upload image and checksum
         uses: actions/upload-artifact@v4

@@ -20,6 +20,8 @@ out_dir=$(dirname "$iso")
 host_log="$out_dir/ci-live-boot-qemu.log"
 serial_log="$out_dir/ci-live-boot-serial.log"
 screenshot="$out_dir/ci-live-boot-screenshot.ppm"
+first_graphical="$out_dir/ci-live-boot-first-graphical-screen.ppm"
+first_graphical_captured=0
 work=$(mktemp -d /tmp/yaran-live-boot-smoke.XXXXXX)
 monitor="$work/monitor.sock"
 display_number=99
@@ -40,7 +42,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-rm -f "$screenshot" "$serial_log" "$host_log"
+rm -f "$screenshot" "$first_graphical" "$serial_log" "$host_log"
 Xvfb "$display" -screen 0 1280x800x24 -nolisten tcp -ac >"$work/xvfb.log" 2>&1 &
 xvfb_pid=$!
 for _ in $(seq 1 20); do
@@ -163,6 +165,11 @@ for second in $(seq 1 150); do
         continue
     fi
 
+    if [ "$first_graphical_captured" -eq 0 ]; then
+        cp "$screenshot" "$first_graphical"
+        first_graphical_captured=1
+        echo 'live-boot-smoke: saved first graphical screen for diagnostics'
+    fi
     cp "$screenshot" "$work/before.ppm"
     take_monitor_action meta_l-ret
     sleep 4

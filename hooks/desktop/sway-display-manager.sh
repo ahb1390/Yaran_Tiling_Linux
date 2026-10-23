@@ -41,11 +41,25 @@ done
 }
 
 install -d -m 0755 /etc/sddm.conf.d /etc/X11 /etc/systemd/system
-cat > /etc/sddm.conf.d/10-yaran-display-manager.conf <<'EOF'
+# Keep all Yaran-specific SDDM settings in one file so no package-generated or
+# alphabetically loaded drop-in can silently select a different theme/session.
+rm -f /etc/sddm.conf.d/10-yaran-display-manager.conf \
+      /etc/sddm.conf.d/zz-yaran-live-autologin.conf
+[ -s /etc/sddm.conf ] || {
+    echo 'sway-display-manager: autologin configuration missing from /etc/sddm.conf' >&2
+    exit 1
+}
+grep -qx 'Session=sway.desktop' /etc/sddm.conf || {
+    echo 'sway-display-manager: canonical SDDM config does not select sway.desktop' >&2
+    exit 1
+}
+cat >> /etc/sddm.conf <<'EOF'
+
 [General]
 DisplayServer=x11
 
 [Theme]
+ThemeDir=/usr/share/sddm/themes
 Current=yaran-greeter
 EOF
 
@@ -54,4 +68,12 @@ EOF
 printf '%s\n' '/usr/bin/sddm' > /etc/X11/default-display-manager
 ln -sfn "$graphical_target" /etc/systemd/system/default.target
 
-echo 'sway-display-manager: SDDM + Yaran greeter theme configured; graphical.target selected'
+grep -qx 'Current=yaran-greeter' /etc/sddm.conf || {
+    echo 'sway-display-manager: Yaran theme is not selected in /etc/sddm.conf' >&2
+    exit 1
+}
+grep -qx 'User=admin' /etc/sddm.conf || {
+    echo 'sway-display-manager: live autologin user is missing from /etc/sddm.conf' >&2
+    exit 1
+}
+echo 'sway-display-manager: canonical SDDM config, Yaran greeter and graphical.target configured'

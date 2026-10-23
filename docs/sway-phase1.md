@@ -18,7 +18,7 @@ that every laptop has already been validated.
 
 The existing 2.0 manifests and their tests are retained during the transition
 as a comparison/fallback. The new profile is named
-Yaran-2.1-amd64-sway-minimal.json; the current test image is version 2.1.1.
+Yaran-2.1-amd64-sway-minimal.json; the current test image is version 2.1.2.
 
 ## Validation required before treating the image as ready
 

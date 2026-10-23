@@ -15,8 +15,8 @@ class SwayManifestTests(unittest.TestCase):
     def test_manifest_targets_debian_trixie_amd64(self):
         self.assertEqual(self.cfg["suite"], "trixie")
         self.assertEqual(self.cfg["architecture"], "amd64")
-        self.assertEqual(self.cfg["version"], "2.1.1")
-        self.assertEqual(self.cfg["iso_filename"], "Yaran-Tiling-2.1.1-amd64-sway-minimal.iso")
+        self.assertEqual(self.cfg["version"], "2.1.2")
+        self.assertEqual(self.cfg["iso_filename"], "Yaran-Tiling-2.1.2-amd64-sway-minimal.iso")
         self.assertEqual(self.cfg["os_release"]["VARIANT_ID"], "sway-minimal")
 
     def test_core_desktop_packages_are_present(self):
@@ -97,7 +97,7 @@ class SwayManifestTests(unittest.TestCase):
         smoke = ROOT / "scripts/ci-live-boot-smoke.sh"
         self.assertTrue(smoke.is_file())
         self.assertIn("ci-live-boot-smoke.sh", ci)
-        self.assertIn("Yaran-Tiling-2.1.1-amd64-sway-minimal.iso", ci)
+        self.assertIn("Yaran-Tiling-2.1.2-amd64-sway-minimal.iso", ci)
 
     def test_sddm_theme_and_graphical_boot_are_configured(self):
         stage = (ROOT / "hooks/desktop/stage-sway-assets.sh").read_text()
@@ -106,10 +106,17 @@ class SwayManifestTests(unittest.TestCase):
         self.assertIn("Current=yaran-greeter", hook)
         self.assertIn("/usr/share/sddm/themes/yaran-greeter", hook)
         self.assertIn("DisplayServer=x11", hook)
+        self.assertIn("cat >> /etc/sddm.conf", hook)
         self.assertIn("/etc/systemd/system/default.target", hook)
+        autologin = (ROOT / "hooks/desktop/sway-live-autologin.sh").read_text()
+        self.assertIn("cat > /etc/sddm.conf", autologin)
+        self.assertIn("Session=$session_name", autologin)
+        self.assertIn("rm -f /etc/sddm.conf.d/10-yaran-display-manager.conf", hook)
         verifier = (ROOT / "hooks/common/verify-sway-image.sh").read_text()
         self.assertIn("SDDM is not Debian default display manager", verifier)
         self.assertIn("system default target is not graphical.target", verifier)
+        self.assertIn("Canonical /etc/sddm.conf is missing", verifier)
+        self.assertIn("/etc/pam.d/sddm-autologin", verifier)
 
     def test_home_defaults_have_app_and_projects_folders(self):
         defaults = (ROOT / "hooks/desktop/sway-defaults.sh").read_text()
