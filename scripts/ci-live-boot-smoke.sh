@@ -178,7 +178,7 @@ for second in $(seq 1 150); do
 
     echo "live-boot-smoke: checking live display after ${second}s"
     take_monitor_action screendump "$screenshot"
-    if ! graphical_screen; then
+    if ! sway_desktop_screen; then
         continue
     fi
 
