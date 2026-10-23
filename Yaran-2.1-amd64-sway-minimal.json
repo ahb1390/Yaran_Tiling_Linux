@@ -45,7 +45,7 @@
     "qml6-module-qtquick-window", "parted", "gdisk", "dosfstools", "e2fsprogs",
     "btrfs-progs", "xfsprogs", "ntfs-3g", "cryptsetup", "os-prober", "efibootmgr",
     "apparmor", "apparmor-profiles", "apparmor-utils", "nftables",
-    "unattended-upgrades", "libpam-systemd", "sddm", "plymouth", "plymouth-themes",
+    "unattended-upgrades", "libpam-systemd", "sddm", "sddm-theme-debian-elarun", "plymouth", "plymouth-themes",
     "curl", "wget", "git", "fastfetch", "vim", "tmux", "ranger",
     "squashfs-tools", "rsync", "zram-tools"
   ],
@@ -65,6 +65,7 @@
     "hooks/desktop/sysctl.sh",
     "hooks/desktop/sway-defaults.sh",
     "hooks/desktop/sway-live-autologin.sh",
+    "hooks/desktop/sway-display-manager.sh",
     "hooks/common/install-fastfetch.sh",
     "hooks/common/install-ble.sh",
     "hooks/common/bash-experience.sh",

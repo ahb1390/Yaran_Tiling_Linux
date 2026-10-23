@@ -18,7 +18,7 @@ for pkg in sway swaybg swayidle swaylock swayosd waybar foot wofi mako-notifier 
            pipewire pipewire-pulse pipewire-audio wireplumber \
            xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
            rtkit alsa-ucm-conf libspa-0.2-bluetooth \
-           sddm calamares polkitd mate-polkit upower power-profiles-daemon \
+           sddm sddm-theme-debian-elarun calamares polkitd mate-polkit upower power-profiles-daemon \
            fonts-vazirmatn fonts-noto-core fonts-noto-cjk fonts-noto-color-emoji \
            firmware-misc-nonfree bluez-firmware zram-tools; do
     has_package "$pkg" || problem "required Sway profile package missing: $pkg"
@@ -50,6 +50,22 @@ grep -Fq 'exec waybar' /etc/sway/config.d/20-yaran-autostart.conf || problem 'Wa
 grep -Fq 'exec mako' /etc/sway/config.d/20-yaran-autostart.conf || problem 'notification daemon is not started'
 
 [ -s /usr/share/wayland-sessions/sway.desktop ] || problem 'Sway Wayland session file missing'
+[ -s /usr/share/sddm/themes/debian-elarun/Main.qml ] || problem 'SDDM Debian Elarun theme is missing'
+[ -s /usr/share/sddm/themes/debian-elarun/theme.conf ] || problem 'SDDM Debian Elarun theme config is missing'
+sddm_theme_cfg=/etc/sddm.conf.d/10-yaran-display-manager.conf
+[ -s "$sddm_theme_cfg" ] || problem 'Yaran SDDM display-manager config is missing'
+if [ -s "$sddm_theme_cfg" ]; then
+    grep -qx 'DisplayServer=x11' "$sddm_theme_cfg" || problem 'SDDM greeter must use X11'
+    grep -qx 'Current=debian-elarun' "$sddm_theme_cfg" || problem 'SDDM Debian Elarun theme is not selected'
+fi
+[ -s /etc/X11/default-display-manager ] || problem 'Debian default-display-manager file is missing'
+grep -qx '/usr/bin/sddm' /etc/X11/default-display-manager 2>/dev/null || problem 'SDDM is not Debian default display manager'
+default_target=$(readlink /etc/systemd/system/default.target 2>/dev/null || true)
+case "$default_target" in
+    /lib/systemd/system/graphical.target|/usr/lib/systemd/system/graphical.target) : ;;
+    *) problem "system default target is not graphical.target: $default_target" ;;
+esac
+[ -s /lib/systemd/system/sddm.service ] || [ -s /usr/lib/systemd/system/sddm.service ] || problem 'SDDM systemd service file is missing'
 if [ -s /usr/share/wayland-sessions/sway.desktop ]; then
     grep -Eq '^Exec=(/usr/bin/)?sway([[:space:]]|$)' /usr/share/wayland-sessions/sway.desktop || \
         problem 'Sway Wayland session entry does not start Sway'

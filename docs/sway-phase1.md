@@ -9,6 +9,8 @@ that every laptop has already been validated.
 - Sway/Wayland with a modular system configuration under /etc/sway.
 - Waybar, foot, wofi, mako, SwayOSD, NetworkManager, PipeWire/WirePlumber,
   the MATE PolicyKit authentication agent (without the LXQt session dependency), common firmware, and Persian-capable fonts.
+- SDDM configured as the display manager, using the Debian Elarun greeter theme
+  and X11 for the greeter, with an explicit graphical boot target.
 - Calamares graphical installation and the existing GRUB/Plymouth branding.
 - Explicit key bindings for Super+Enter, Super+KP_Enter, volume/mute, and
   brightness.

@@ -24,7 +24,7 @@ class SwayManifestTests(unittest.TestCase):
             "network-manager", "network-manager-gnome",
             "pipewire", "pipewire-pulse", "pipewire-audio", "wireplumber",
             "xdg-desktop-portal", "xdg-desktop-portal-wlr", "xdg-desktop-portal-gtk",
-            "sddm", "calamares", "polkitd", "mate-polkit",
+            "sddm", "sddm-theme-debian-elarun", "calamares", "polkitd", "mate-polkit",
             "fonts-vazirmatn", "fonts-noto-core", "fonts-noto-cjk",
             "fonts-noto-color-emoji", "firmware-misc-nonfree", "bluez-firmware",
         }
@@ -80,11 +80,25 @@ class SwayManifestTests(unittest.TestCase):
         self.assertIn("hooks/desktop/stage-sway-assets.sh", pre)
         self.assertLess(post.index("hooks/desktop/sway-defaults.sh"),
                         post.index("hooks/desktop/sway-live-autologin.sh"))
+        self.assertLess(post.index("hooks/desktop/sway-live-autologin.sh"),
+                        post.index("hooks/desktop/sway-display-manager.sh"))
+        self.assertLess(post.index("hooks/desktop/sway-display-manager.sh"),
+                        post.index("hooks/common/verify-sway-image.sh"))
         self.assertLess(post.index("hooks/desktop/grub-theme.sh"),
                         post.index("hooks/desktop/plymouth-theme.sh"))
         self.assertEqual(post[-1], "hooks/common/verify-sway-image.sh")
         for script in pre + post:
             self.assertTrue((ROOT / script).is_file(), f"missing hook: {script}")
+
+    def test_sddm_theme_and_graphical_boot_are_configured(self):
+        self.assertIn("sddm-theme-debian-elarun", self.cfg["packages"])
+        hook = (ROOT / "hooks/desktop/sway-display-manager.sh").read_text()
+        self.assertIn("Current=debian-elarun", hook)
+        self.assertIn("DisplayServer=x11", hook)
+        self.assertIn("/etc/systemd/system/default.target", hook)
+        verifier = (ROOT / "hooks/common/verify-sway-image.sh").read_text()
+        self.assertIn("SDDM is not Debian default display manager", verifier)
+        self.assertIn("system default target is not graphical.target", verifier)
 
     def test_home_defaults_have_app_and_projects_folders(self):
         defaults = (ROOT / "hooks/desktop/sway-defaults.sh").read_text()
