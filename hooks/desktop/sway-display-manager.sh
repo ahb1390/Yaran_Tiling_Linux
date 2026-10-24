@@ -62,12 +62,9 @@ install -d -m 0755 /usr/local/bin /var/log
 cat > /usr/local/bin/yaran-sway-session <<'EOF'
 #!/bin/bash
 set -u
-log=/var/log/yaran-sway-session.log
-if [ -w /dev/ttyS0 ]; then
-    exec > >(tee -a "$log" /dev/ttyS0) 2>&1
-else
-    exec >>"$log" 2>&1
-fi
+log="${HOME:-/home/admin}/.local/share/yaran-sway-session.log"
+mkdir -p "$(dirname "$log")"
+exec >>"$log" 2>&1
 echo "yaran-sway-session: starting at $(date -Is)"
 id
 printf 'XDG_SESSION_TYPE=%s\nXDG_RUNTIME_DIR=%s\nWAYLAND_DISPLAY=%s\n' \
@@ -110,6 +107,8 @@ log=/var/log/yaran-sddm-diagnostics.log
     id admin
     echo "===== Session desktop file ====="
     cat /usr/share/wayland-sessions/sway.desktop
+    echo "===== Sway session wrapper log ====="
+    cat /home/admin/.local/share/yaran-sway-session.log
     echo "===== SDDM journal ====="
     journalctl -b -u sddm.service --no-pager -n 200
     echo "===== PAM/session errors in current boot ====="
