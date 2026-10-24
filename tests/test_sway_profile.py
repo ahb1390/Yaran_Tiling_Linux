@@ -18,6 +18,7 @@ class SwayManifestTests(unittest.TestCase):
         self.assertEqual(self.cfg["version"], "2.1.3")
         self.assertEqual(self.cfg["iso_filename"], "Yaran-Tiling-2.1.3-amd64-sway-minimal.iso")
         self.assertEqual(self.cfg["os_release"]["VARIANT_ID"], "sway-minimal")
+        self.assertIn("live-config.nox11autologin", self.cfg["boot_append"])
 
     def test_core_desktop_packages_are_present(self):
         required = {

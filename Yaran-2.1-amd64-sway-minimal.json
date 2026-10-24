@@ -77,7 +77,7 @@
     "hooks/common/verify-image.sh",
     "hooks/common/verify-sway-image.sh"
   ],
-  "boot_append": "quiet splash console=ttyS0,115200n8 systemd.journald.forward_to_console=1 systemd.log_target=console",
+  "boot_append": "quiet splash live-config.nox11autologin console=ttyS0,115200n8 systemd.journald.forward_to_console=1 systemd.log_target=console",
   "squashfs_compression": "xz",
   "os_release": {
     "NAME": "Yaran Tiling Linux",
