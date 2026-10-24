@@ -55,6 +55,32 @@ grep -Eq '^Exec=(/usr/bin/)?sway([[:space:]]|$)' /usr/share/wayland-sessions/swa
     exit 1
 }
 
+# Temporary boot diagnostics: keep the Sway session's startup trace so real
+# QEMU boots can distinguish failed SDDM autologin from a crashing compositor.
+# The trace goes to /var/log on real hardware and to QEMU's serial capture in CI.
+install -d -m 0755 /usr/local/bin /var/log
+cat > /usr/local/bin/yaran-sway-session <<'EOF'
+#!/bin/bash
+set -u
+log=/var/log/yaran-sway-session.log
+if [ -w /dev/ttyS0 ]; then
+    exec > >(tee -a "$log" /dev/ttyS0) 2>&1
+else
+    exec >>"$log" 2>&1
+fi
+echo "yaran-sway-session: starting at $(date -Is)"
+id
+printf 'XDG_SESSION_TYPE=%s\nXDG_RUNTIME_DIR=%s\nWAYLAND_DISPLAY=%s\n' \
+    "${XDG_SESSION_TYPE:-}" "${XDG_RUNTIME_DIR:-}" "${WAYLAND_DISPLAY:-}"
+ls -ld "${XDG_RUNTIME_DIR:-/nonexistent}" 2>&1 || true
+exec /usr/bin/sway -d
+EOF
+chmod 0755 /usr/local/bin/yaran-sway-session
+# Preserve desktop metadata but route SDDM's actual session launch through the
+# diagnostic wrapper; this is only for collecting evidence about the failed boot.
+sed -i 's|^Exec=.*|Exec=/usr/local/bin/yaran-sway-session|' /usr/share/wayland-sessions/sway.desktop
+grep -qx 'Exec=/usr/local/bin/yaran-sway-session' /usr/share/wayland-sessions/sway.desktop
+
 graphical_target=
 for candidate in /lib/systemd/system/graphical.target /usr/lib/systemd/system/graphical.target; do
     if [ -e "$candidate" ]; then graphical_target=$candidate; break; fi
