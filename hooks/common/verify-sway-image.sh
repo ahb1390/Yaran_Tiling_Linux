@@ -77,9 +77,10 @@ case "$default_target" in
 esac
 [ -s /lib/systemd/system/sddm.service ] || [ -s /usr/lib/systemd/system/sddm.service ] || problem 'SDDM systemd service file is missing'
 if [ -s /usr/share/wayland-sessions/sway.desktop ]; then
-    grep -Eq '^Exec=(/usr/bin/)?sway([[:space:]]|$)' /usr/share/wayland-sessions/sway.desktop || \
-        problem 'Sway Wayland session entry does not start Sway'
+    grep -qx 'Exec=/usr/local/bin/yaran-sway-session' /usr/share/wayland-sessions/sway.desktop || \
+        problem 'Sway Wayland session must use the diagnostic wrapper'
 fi
+[ -x /usr/local/bin/yaran-sway-session ] || problem 'Sway session diagnostic wrapper is missing'
 # Autologin is validated above in the canonical /etc/sddm.conf file.
 [ -x /usr/libexec/polkit-mate-authentication-agent-1 ] || \
     problem 'MATE PolicyKit authentication agent executable is missing'
