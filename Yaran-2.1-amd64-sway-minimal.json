@@ -90,6 +90,7 @@
   },
   "install_recommends": false,
   "vendor_repositories": false,
+  "user_groups": ["sudo", "audio", "video", "plugdev", "netdev", "dialout"],
   "services": {
     "enable": [
       "sddm", "NetworkManager", "systemd-timesyncd", "bluetooth",
