@@ -81,6 +81,60 @@ chmod 0755 /usr/local/bin/yaran-sway-session
 sed -i 's|^Exec=.*|Exec=/usr/local/bin/yaran-sway-session|' /usr/share/wayland-sessions/sway.desktop
 grep -qx 'Exec=/usr/local/bin/yaran-sway-session' /usr/share/wayland-sessions/sway.desktop
 
+# Collect the effective SDDM configuration and PAM/journal evidence on the
+# actual live boot. The greeter can silently return after a rejected autologin,
+# so this runs independently of whether the Sway session starts.
+cat > /usr/local/sbin/yaran-sddm-diagnostics <<'EOF'
+#!/bin/bash
+set +e
+sleep 18
+log=/var/log/yaran-sddm-diagnostics.log
+{
+    echo "===== Yaran SDDM boot diagnostics ====="
+    date -Is
+    echo "===== SDDM service ====="
+    systemctl status sddm.service --no-pager -l
+    echo "===== Main SDDM configuration ====="
+    cat /etc/sddm.conf
+    echo "===== SDDM drop-in configuration files ====="
+    for dir in /usr/lib/sddm/sddm.conf.d /etc/sddm.conf.d; do
+        [ -d "$dir" ] || continue
+        find "$dir" -maxdepth 1 -type f -print
+        find "$dir" -maxdepth 1 -type f -name '*.conf' -exec sh -c 'echo "--- $1"; cat "$1"' _ {} \;
+    done
+    echo "===== SDDM autologin PAM policy ====="
+    cat /etc/pam.d/sddm-autologin
+    echo "===== Live account status ====="
+    getent passwd admin
+    passwd -S admin
+    id admin
+    echo "===== Session desktop file ====="
+    cat /usr/share/wayland-sessions/sway.desktop
+    echo "===== SDDM journal ====="
+    journalctl -b -u sddm.service --no-pager -n 200
+    echo "===== PAM/session errors in current boot ====="
+    journalctl -b --no-pager -n 600 | grep -iE 'sddm|pam_|autologin|wayland-session|sway' | tail -n 250
+    echo "===== End Yaran SDDM boot diagnostics ====="
+} > "$log" 2>&1
+timeout 5 cat "$log" > /dev/ttyS0 2>/dev/null || true
+EOF
+chmod 0755 /usr/local/sbin/yaran-sddm-diagnostics
+cat > /etc/systemd/system/yaran-sddm-diagnostics.service <<'EOF'
+[Unit]
+Description=Yaran SDDM boot diagnostics (temporary CI investigation)
+After=sddm.service
+Wants=sddm.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/yaran-sddm-diagnostics
+TimeoutStartSec=35s
+
+[Install]
+WantedBy=graphical.target
+EOF
+systemctl enable yaran-sddm-diagnostics.service
+
 graphical_target=
 for candidate in /lib/systemd/system/graphical.target /usr/lib/systemd/system/graphical.target; do
     if [ -e "$candidate" ]; then graphical_target=$candidate; break; fi
