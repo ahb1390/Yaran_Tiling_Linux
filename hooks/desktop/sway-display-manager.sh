@@ -115,7 +115,7 @@ log=/var/log/yaran-sddm-diagnostics.log
     journalctl -b --no-pager -n 600 | grep -iE 'sddm|pam_|autologin|wayland-session|sway' | tail -n 250
     echo "===== End Yaran SDDM boot diagnostics ====="
 } > "$log" 2>&1
-timeout 5 cat "$log" > /dev/ttyS0 2>/dev/null || true
+timeout 20 sh -c 'cat "$1" > /dev/ttyS0' sh "$log" 2>/dev/null || true
 EOF
 chmod 0755 /usr/local/sbin/yaran-sddm-diagnostics
 cat > /etc/systemd/system/yaran-sddm-diagnostics.service <<'EOF'
@@ -127,7 +127,7 @@ Wants=sddm.service
 [Service]
 Type=oneshot
 ExecStart=/usr/local/sbin/yaran-sddm-diagnostics
-TimeoutStartSec=35s
+TimeoutStartSec=55s
 
 [Install]
 WantedBy=graphical.target
